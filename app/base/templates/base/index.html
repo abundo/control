@@ -1,0 +1,63 @@
+{% extends "base/base.html" %}
+
+{% block content_header %}
+<!-- Content Header (Page header) -->
+    <div class="row mb-2">
+        <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Start</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">Start</li>
+        </ol>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+{% endblock content_header %}
+
+{% block content %}
+    <!-- Main content -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+                <!--
+                <div class="card-header">
+                    <h5 class="m-0">Interna system</h5>
+                </div> --><!-- /.card-header -->
+              <div class="card-body table-responsive py-0">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                        <th>Klicka för att öppna</th>
+                        <th>Beskrivning</th>
+                        <th>Inloggning</th>
+                    </tr>
+                    </thead>
+                  <tbody>
+
+                    {% for group in links.index %}
+                      <tr>
+                          <td colspan="3"><h5><br>{{ group.name }}</h5></td>
+                      </tr>
+                      {% for link in group.links %}
+                      <tr>
+                        <td><a href="{{link.url}}" target="{{link.target}}" class="badge {{link.badge}}">{{link.name}}</a></td>
+                        <td>{{link.description | safe}}</td>
+                        <td>{% if link.login %}
+                            <span class="badge badge-pill {{link.login_badge}}">{{link.login}}</span></td>
+                        </tr>{% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+            </div>     <!-- /.card-body -->
+        </div> <!-- /.card -->
+      </div> <!-- /.col-lg-12 -->
+    </div> <!-- /.row -->
+    {{ links.index_footer }}
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

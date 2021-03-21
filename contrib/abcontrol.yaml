@@ -1,0 +1,254 @@
+---
+default_domain: example.com
+
+# ---------------------------------------------------------------------------
+# Django settings
+# ---------------------------------------------------------------------------
+
+django:
+  secret_key: <set secret key here>
+  requests_ca_bundle: /etc/ssl/certs/ca-certificates.crt
+  language_code: en-us
+  time_zone: Europe/Stockholm
+  
+  # ----- ldap -----
+  ldap:
+    enabled: true
+    server: ldap://127.0.0.1
+    start_tls: false
+    bind_dn: ""
+    bind_password: ""
+    user_search: ou=people,dc=net,dc=example,dc=com
+
+  # ----- abontrol database -----
+  
+  db:
+    NAME: abcontrol
+    USER: abcontrol
+    PASSWORD: <set postgres password>
+    HOST: 127.0.0.1
+    PORT: 5432
+
+# ---------------------------------------------------------------------------
+# API
+# ---------------------------------------------------------------------------
+api:
+  control:
+    url: https://control.example.com/api
+  device:
+    url: https://control.example.com/api/device
+  dhcp_clients:
+    url: http://control.example.com/dhcpd-clients.php
+
+# ---------------------------------------------------------------------------
+# Device-API
+# ---------------------------------------------------------------------------
+
+# todo, replace with above api.device
+device:
+  api:
+    url: https://control.example.com/api/device
+
+
+# ---------------------------------------------------------------------------
+# Message bus
+# ---------------------------------------------------------------------------
+
+rabbitmq:
+  hostname: 127.0.0.1
+  username: abtools_control
+  password: <set rabbitmq password>
+
+# Specify what roles this server handles
+msg_handler:
+  handle:
+    save_log: 1
+    sync_becs_to_netbox: 1
+    sync_netbox_to_device_api: 1
+    icinga_process_check_result: 1
+    update_dns: 1
+    update_icinga: 1
+    update_librenms: 1
+    update_oxidized: 1
+
+# ---------------------------------------------------------------------------
+# NetBox
+# ---------------------------------------------------------------------------
+
+netbox:
+  url: https://netbox.example.com/
+
+  # from netbox /user/api-token
+  token: <set token>
+
+# ---------------------------------------------------------------------------
+# update_dns
+# ---------------------------------------------------------------------------
+
+sync_dns:
+  dest_record_file: /etc/dnsmgr/records_from_element_api
+  
+  ignore_models:
+    waystream: 1
+
+  ignore_platforms:
+    linux: 1
+    ibos: 1
+
+# ---------------------------------------------------------------------------
+# BECS
+# ---------------------------------------------------------------------------
+
+becs:
+  eapi:
+    url: http://becs.example.com:4490/becs.wsdl
+    username: becssync
+    password: <set becs api password>
+
+
+# ---------------------------------------------------------------------------
+# Librenms
+# ---------------------------------------------------------------------------
+
+librenms:
+
+  api:
+    url: https://librenms.example.com/api/v0
+    key: <specify API key>
+
+  db:
+    host: 127.0.0.1
+    user: <database user>
+    pass: <database password>
+    name: <database name>
+  
+  snmp:
+    version: v2c
+    community:
+    - <first community>
+    - <second community>
+
+librenms_sync:
+
+  # List of elemenets that sync script should ignore/not delete
+  persistent_devices:
+    localhost : 1
+
+  # List of regex, if "interface role" match is found, interface will be configured with ignored=0
+  roles_enabled:
+    - ^uplink\..*
+
+  # List of regex, if "interface name" match is found, interface will be configured with ignored=1
+  interfaces_disabled:
+    - "~Vl"
+
+# ---------------------------------------------------------------------------
+# Oxidized
+# ---------------------------------------------------------------------------
+
+oxidized:
+  url: https://oxidized.example.com
+  username: script
+  password: <set password>
+
+
+oxidized_sync:
+  # List of names to ignore
+  ignore_names:
+    dummy_no_match: 1
+
+  # List of manufacturers we ignore
+  ignore_manufacturers:
+    dummy_no_match: 1
+ 
+  # List of models we ignore
+  ignore_models:
+    dummy_no_match: 1
+    raycore: 1
+
+  # List of sources we ignore
+  ignore_device_tags:
+    becs: 1
+
+  # List of platforms we ignore
+  ignore_platforms:
+    CTS: 1
+    Raycore: 1
+
+  # hash of elemenets that sync script should always include
+  persistent_devices: {}
+  
+  #persistent_devices:
+  #  "asw1000": "ciscosmb"
+
+
+# ---------------------------------------------------------------------------
+# Icinga
+# ---------------------------------------------------------------------------
+
+icinga:
+  api:
+    url: https://127.0.0.1:5665
+    username: root
+    password: <set icinga api password>
+
+notify:
+  email:
+    sender: Icinga <noreply@example.com>
+
+icinga_sync:
+
+  ignore_devices:
+    infra1.example.com: 1
+    infra2.example.com: 1
+    infra3.example.com: 1
+    bbe.example.com: 1
+    becs.example.com: 1
+    portal.example.com: 1
+    ns3.example.com: 1
+    ns4.example.com: 1
+    
+  hosts_file:
+    tmp: /tmp/ab-devices-hosts.conf
+    dst: /etc/icinga2/conf.d/ab-devices-hosts.conf
+
+  users_file:
+    tmp: /tmp/ab-users.conf
+    dst: /etc/icinga2/conf.d/ab-users.conf
+
+  default_notification: |
+    vars.notification["mail"] = {
+      groups = [ "icingaadmins" ]
+    }
+
+  host_template: |
+
+    object Host "{{device.name}}" {
+      import "generic-host"
+
+      address = "{{ device.primary_ip4.address.split("/")[0] }}"
+
+      vars.pe_location = "{{device.location}}"
+      vars.pe_manufacturer = "{{device.manufacturer}}"
+      vars.pe_model = "{{device.model}}"
+      vars.pe_role = "{{device.role}}"
+      vars.pe_platform = "{{device.platform}}"
+      vars.pe_comments = {{device.comments}}
+      vars.pe_site_name = "{{device.esite_name}}"
+    {{p.options}}
+    }
+    
+  dependency_template: |
+    object Dependency "{{p.depname}}" {
+      parent_host_name = "{{p.parent}}"
+      child_host_name = "{{device.name}}"
+      ignore_soft_states = false
+      states = [ Up ]
+    }
+    
+  user_template: |
+  
+    object User "{username}" {{
+      display_name = "{displayname}"
+      email = "{email}"
+    }}

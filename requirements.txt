@@ -1,0 +1,18 @@
+# apt install libsasl2-dev libldap2-dev libssl-dev
+wheel
+psycopg2-binary
+django~=2.2.10
+sphinx~=3.2.1
+django-auth-ldap
+gunicorn==20.0.4
+orderedattrdict
+jinja2
+PyYAML
+pika
+zeep
+pynetbox
+PyMySQL
+sphinx-material
+
+# for emmgr
+ssh2-python

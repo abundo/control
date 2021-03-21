@@ -1,0 +1,249 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content_header %}
+<!-- Content Header (Page header) -->
+    <div class="row mb-2">
+        <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Device {{ name }}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">Device</li>
+        </ol>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+{% endblock content_header %}
+
+{% block content %}
+    <!-- Main content -->
+
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+              <!--
+              <div class="card-header">
+                  <h5 class="m-0">Interna system</h5>
+              </div> --><!-- /.card-header -->
+            <div class="card-body table-responsive py-0">
+              <table class="table table-hover table-sm">
+                <tbody>
+                    <tr>
+                        <th>What</th>
+                        <th>Value</th>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ device.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Manufacturer</td>
+                        <td>{{ device.device_type.manufacturer.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Model</td>
+                        <td>{{ device.device_type.model }}</td>
+                    </tr>
+                    <tr>
+                        <td>Site</td>
+                        <td>{{ device.site.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Platform</td>
+                        <td>{{ device.platform.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Primary IPv4 address</td>
+                        <td>{{ device.primary_ip4.address }}</td>
+                    </tr>
+                    <tr>
+                        <td>Primary IPv6 address</td>
+                        <td>{{ device.primary_ip6.address }}</td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>{{ device.status.label }}</td>
+                    </tr>
+                    <tr>
+                        <td>Comments</td>
+                        <td>{{ device.comments }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tags</td>
+                        <td>{% for key,val in device.tags.items %}
+                            {{ key }}
+                            {{ val }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+    </tbody>
+                
+              </table>
+          </div>     <!-- /.card-body -->
+      </div> <!-- /.card -->
+    </div> <!-- /.col-lg-12 -->
+  </div> <!-- /.row -->
+
+  <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+              <!--
+              <div class="card-header">
+                  <h5 class="m-0">Interna system</h5>
+              </div> --><!-- /.card-header -->
+            <div class="card-body table-responsive py-0">
+              <table class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>Interface</th>
+                        <th>VLAN<br>untagged</th>
+                        <th>VLAN<br>tagged</th>
+                        <th>VLAN<br>untagged</th>
+                        <th>VLAN<br>tagged</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for interface in interfaces %}
+                    <tr>
+                        <td>{{interface.name}}</td>
+                        <td>
+                            {{interface.untagged_vlan.vid}}
+                            {{interface.untagged_vlan.name}}
+                        </td>
+                        <td>{% for vlan in interface.tagged_vlans %}
+                            {{ vlan.vid }}
+                            {{ vlan.name }}
+                            <br>
+                            {% endfor %}
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+          </div>     <!-- /.card-body -->
+      </div> <!-- /.card -->
+    </div> <!-- /.col-lg-12 -->
+  </div> <!-- /.row -->
+
+ 
+{% endblock %}
+
+
+{% block scriptadd %}
+{% endblock %}
+
+{% block script %}
+<script>
+    log_autoscroll = true;
+    log_autoupdate = false;
+    log_last_id = "";
+    log_lines = 0;
+    log = $('#id_log');
+
+
+    function send_event(name) {
+        console.log("Send command", name);
+        $.ajax({
+            url: "api/cmd/send/" + name,
+            data: "",
+            contentType: "application/json;charset=UTF-8",
+            // type: "POST",
+            async: false,
+            success: function (response) {
+                console.log("Response", response);
+            }
+        });
+    }
+
+    function set_log_autoscroll() {
+        log_autoscroll = $("#id_check1").is(":checked");
+        if (log_autoscroll) {
+            log_scroll_to_end();
+        }
+    }
+
+    function log_scroll_to_end() {
+        log.scrollTop(log[0].scrollHeight - log.height());
+    }
+
+    function set_log_autoupdate() {
+        tmp = $("#id_check2").is(":checked");
+        if (tmp) {
+            start_poll_log();
+        } else {
+            stop_poll_log();
+        }
+
+    }
+
+    function poll_log(){
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        $.ajax({
+            url: "api/log/" + log_last_id,
+            data: "",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            async: false,
+            success: function (response) {
+                prev_log_last_id = log_last_id;
+                for (log_entry of response["data"]) {
+
+                    // Convert UTC timestamp to local timestamp
+                    var timestamp = new Date(log_entry["timestamp"]);
+                    var timestamp = new Date(timestamp.getTime() - tzoffset);
+                    timestamp = timestamp.toISOString().substr(0,23).replace("T", " ");
+
+                    line = "\n" + timestamp + " : " + log_entry["msg"];
+                    log.val( function(index, val) {
+                        if (log_lines > 498) {
+                            // Remove first line
+                            return val.replace(/^.*\n/g,"") + line;
+                        } else {
+                            log_lines += 1;
+                            return val + line;
+                        }
+                    });
+                    log_last_id = log_entry["id"];
+                }
+                if (prev_log_last_id != log_last_id) {
+                    if (log.length && log_autoscroll) {
+                        log_scroll_to_end();
+                    }
+                }
+            }
+            });
+            if (log_autoupdate) {
+                setTimeout(poll_log, 1000);
+            }
+        }
+
+    function start_poll_log() {
+        console.log("start_poll_log()");
+        if (!log_autoupdate) {
+            log_last_id = "";
+            log_lines = 0
+            log_autoupdate = true;
+            $("#id_log").val("");
+            poll_log();
+        }
+    }
+
+    function stop_poll_log() {
+        if (log_autoupdate) {
+            log_autoupdate = false;
+        }
+    }
+
+    $(document).ready(function() {
+        // start_poll_log();
+    });
+
+</script>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

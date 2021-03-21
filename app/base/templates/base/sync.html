@@ -1,0 +1,205 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content_header %}
+<!-- Content Header (Page header) -->
+    <div class="row mb-2">
+        <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Sync</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">Sync</li>
+        </ol>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+{% endblock content_header %}
+
+{% block content %}
+    <!-- Main content -->
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+              <!--
+              <div class="card-header">
+                  <h5 class="m-0">Interna system</h5>
+              </div> --><!-- /.card-header -->
+            <div class="card-body table-responsive py-0">
+              <table class="table table-hover table-sm">
+                <tbody>
+                  <tr>
+                    <td colspan="2"><strong>Datainsamling</strong></td>
+                    <td colspan="2"><strong>Uppdatera system</s></td>
+                  </tr>
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('sync_becs_to_netbox');" >Kör</button></td>
+                    <td>Synk BECS -> Netbox</td>
+
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_dns');" >Kör</button></td>
+                    <td>Uppdatera DNS</td>
+                  </tr>
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('sync_netbox_to_device_api');" >Kör</button></td>
+                    <td>Synk Netbox -> device-api</a></td>
+                    
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_icinga');" >Kör</button></td>
+                    <td>Uppdatera Icinga</td>
+                </tr>
+
+                  <tr>
+                    <td colspan="2"><strong>Övrigt</strong></td>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_librenms');" >Kör</button></td>
+                    <td>Uppdatera Librenms</td>
+                  </tr>
+
+                   <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('ping');" >Kör</button></td>
+                    <td>Pinga alla systems</td>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_oxidized');" >Kör</button></td>
+                    <td>Uppdatera Oxidized</td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>     <!-- /.card-body -->
+      </div> <!-- /.card -->
+    </div> <!-- /.col-lg-12 -->
+  </div> <!-- /.row -->
+
+  <form class="form">
+    <div class="card">
+      
+      <div class="card-header">
+      <div class="row">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-2">
+            <label><input type="checkbox" id = "id_check1" checked onclick="set_log_autoscroll();">Auto-scroll</label>
+        </div>
+        <div class="col-sm-2">
+            <label><input type="checkbox" id = "id_check2" checked onclick="set_log_autoupdate();">Auto-update</label>
+        </div>
+      </div>
+      </div>
+
+      <div class="card-content" style="height: 100vh;">
+       <textarea class="form-control" rows="10" id="id_log" readonly></textarea>
+      </div>
+    </div>
+</form>
+{% endblock %}
+
+
+{% block scriptadd %}
+{% endblock %}
+
+{% block script %}
+<script>
+    log_autoscroll = true;
+    log_autoupdate = false;
+    log_last_id = "";
+    log_lines = 0;
+    log = $('#id_log');
+
+
+    function send_event(name) {
+        console.log("Send command", name);
+        $.ajax({
+            url: "api/cmd/send/" + name,
+            data: "",
+            contentType: "application/json;charset=UTF-8",
+            // type: "POST",
+            async: false,
+            success: function (response) {
+                console.log("Response", response);
+            }
+        });
+    }
+
+    function set_log_autoscroll() {
+        log_autoscroll = $("#id_check1").is(":checked");
+        if (log_autoscroll) {
+            log_scroll_to_end();
+        }
+    }
+
+    function log_scroll_to_end() {
+        log.scrollTop(log[0].scrollHeight - log.height());
+    }
+
+    function set_log_autoupdate() {
+        tmp = $("#id_check2").is(":checked");
+        if (tmp) {
+            start_poll_log();
+        } else {
+            stop_poll_log();
+        }
+
+    }
+
+    function poll_log(){
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        $.ajax({
+            url: "api/log/" + log_last_id,
+            data: "",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            async: false,
+            success: function (response) {
+                prev_log_last_id = log_last_id;
+                for (log_entry of response["data"]) {
+
+                    // Convert UTC timestamp to local timestamp
+                    var timestamp = new Date(log_entry["timestamp"]);
+                    var timestamp = new Date(timestamp.getTime() - tzoffset);
+                    timestamp = timestamp.toISOString().substr(0,23).replace("T", " ");
+
+                    line = "\n" + timestamp + " : " + log_entry["hostname"] + " : " + log_entry["msg"];
+                    log.val( function(index, val) {
+                        if (log_lines > 498) {
+                            // Remove first line
+                            return val.replace(/^.*\n/g,"") + line;
+                        } else {
+                            log_lines += 1;
+                            return val + line;
+                        }
+                    });
+                    log_last_id = log_entry["id"];
+                }
+                if (prev_log_last_id != log_last_id) {
+                    if (log.length && log_autoscroll) {
+                        log_scroll_to_end();
+                    }
+                }
+            }
+            });
+            if (log_autoupdate) {
+                setTimeout(poll_log, 1000);
+            }
+        }
+
+    function start_poll_log() {
+        console.log("start_poll_log()");
+        if (!log_autoupdate) {
+            log_last_id = "";
+            log_lines = 0
+            log_autoupdate = true;
+            $("#id_log").val("");
+            poll_log();
+        }
+    }
+
+    function stop_poll_log() {
+        if (log_autoupdate) {
+            log_autoupdate = false;
+        }
+    }
+
+    $(document).ready(function() {
+        start_poll_log();
+    });
+
+</script>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

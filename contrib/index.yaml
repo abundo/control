@@ -1,0 +1,88 @@
+---
+index:
+
+  # ------ Group -----
+
+  - name: Interna system
+    links:
+      - name:        BECS
+        description: Management of access-switches, services
+        url:         https://becs.example.com
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+
+      - name:        FusionDirectory
+        description: Management of users and groups in LDAP server
+        url:         https://fusiondirectory.example.com/fusiondirectory/
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+        
+      - name:        Icinga
+        description: Monitoring of devices and services
+        url:         https://icinga.example.com/
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+        
+      - name:        Librenms
+        description: Monitoring of devices and services, performance measurement, history, graphs
+        url:         https://librenms.example.com/
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+        
+      - name:        NetBox
+        description: IP address Management, VLAN management
+        url:         https://netbox.example.com/
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+        
+      - name:        Oxidized
+        description: Configuration backup of devices. Configs can be accessed in Librenms
+        url:         https://oxidized.example.com/
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+        
+  # ------ Group -----
+
+  - name: Externa system
+    links:
+      - name:        Netrounds
+        description: Service monitoring
+        url:         https://app.netrounds.com/
+        target:       _blank
+        badge:       badge-info
+        login:       Netrounds
+        login_badge: badge-warning
+
+  # ------ Group -----
+
+  - name: Functions
+    links:
+      - name:        DHCP Server
+        description: Show leases
+        url:         /dhcpd_leases
+        target:       _blank
+        badge:       badge-info
+        login:       
+        login_badge: badge-secondary
+        
+      - name:        Files
+        description: File manager for /tftpboot
+        url:         https://files.example.com
+        target:       _blank
+        badge:       badge-info
+        login:       LDAP
+        login_badge: badge-secondary
+
+index_footer: Additional text for footer on index page

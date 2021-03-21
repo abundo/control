@@ -1,0 +1,54 @@
+{% extends "base/base.html" %}
+
+{% block content_header %}
+{% endblock content_header %}
+
+{% block content %}
+
+{% if form.errors %}
+  <p>Ditt username och/eller password stämmer inte, försök igen!</p>
+{% endif %}
+
+
+<div class="login-box">
+  <div class="card">
+    <div class="card-body login-card-body">
+      {% if next %}
+        {% if user.is_authenticated %}
+            <p class="login-box-msg">Ditt konto har inte åtkomst till denna sida.</p>
+        {% else %}
+            <p class="login-box-msg">Vänligen logga in.<br>Använd ditt LDAP konto.</p>
+        {% endif %}
+    {% endif %}
+    
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}  
+        <input type="hidden" name="next" value="{{ next }}" />            
+        <table class="table">
+            <tr>
+                <td>{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+            </tr>
+            <tr>
+                <td><strong>Remember me</strong></td>
+                <td><input type="checkbox" id="remember"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button type="submit" class="btn btn-primary btn-block">Sign In</button></td>
+            </tr>
+        </table>
+      </form>
+
+      <!-- <p class="mb-1">
+        <a href="{% url 'password_reset' %}">I forgot my password</a>
+      </p> -->
+    </div>    <!-- /.login-card-body -->
+  </div>    <!-- /.login-card -->
+</div> <!-- /.login-box -->
+
+{% endblock content %}

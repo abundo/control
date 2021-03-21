@@ -1,0 +1,15 @@
+[Unit]
+Description=abcontrol background worker
+After=network.target
+
+[Service]
+#User=www-data
+#Group=www-data
+Type=simple
+WorkingDirectory=/opt/abcontrol/app
+ExecStart=/opt/abcontrol/bin/python3 -u /opt/abcontrol/app/tools/cli/background_worker.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
