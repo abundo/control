@@ -20,7 +20,7 @@ import multiprocessing
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 if sys.prefix == sys.base_prefix:
-    print("Error: You must run this script in a ptyhon venv")
+    print("Error: You must run this script in a python venv")
     sys.exit(1)
 
 if "/opt" not in sys.path:
@@ -145,8 +145,8 @@ def ping(data):
     """
     Return a response, we are alive!
     """
-    handles: str = ", ".join(config.msg_handler.handle.keys())
-    log(f"Pong from {platform.node()}. handles {handles}")
+    handles: str = ", ".join(config.roles.keys())
+    log(f"Ping response: from {platform.node()}. handles {handles}")
     rabbitmq.send_log("Done", msgid=data["xid"])
 
 
@@ -168,7 +168,7 @@ def run_cmd(data=None, name: str = None, directory=None, cmd: str = None):
 
 
 def sync_becs_to_netbox(data):
-    if "sync_becs_to_netbox" not in config.msg_handler.handle:
+    if "becs" not in config.roles:
         return
     run_cmd(data=data,
             name="sync_becs_to_netbox",
@@ -177,7 +177,7 @@ def sync_becs_to_netbox(data):
 
 
 def sync_netbox_to_device_api(data):
-    if "sync_netbox_to_device_api" not in config.msg_handler.handle:
+    if "abcontrol" not in config.roles:
         return
     run_cmd(data=data,
             name="sync_netbox_to_device_api",
@@ -187,7 +187,7 @@ def sync_netbox_to_device_api(data):
 
 
 def update_dns(data):
-    if "update_dns" not in config.msg_handler.handle:
+    if "dns" not in config.roles:
         return
     run_cmd(data=data,
             name="update_dns()",
@@ -196,7 +196,7 @@ def update_dns(data):
 
 
 def update_librenms(data):
-    if "update_librenms" not in config.msg_handler.handle:
+    if "librenms" not in config.roles
         return
     run_cmd(data=data,
             name="update_librenms()",
@@ -204,17 +204,8 @@ def update_librenms(data):
     )
 
 
-def update_icinga(data):
-    if "update_icinga" not in config.msg_handler.handle:
-        return
-    run_cmd(data=data,
-            name="update_icinga()",
-            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/icinga/update_icinga.py"]
-    )
-
-
 def update_oxidized(data):
-    if "update_oxidized" not in config.msg_handler.handle:
+    if "oxidized" not in config.roles
         return
     run_cmd(data=data,
             name="update_oxidized()",
@@ -222,9 +213,18 @@ def update_oxidized(data):
     )
     
 
+def update_icinga(data):
+    if "icinga" not in config.roles:
+        return
+    run_cmd(data=data,
+            name="update_icinga()",
+            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/icinga/update_icinga.py"]
+    )
+
+
 def icinga_process_check_result(data):
-    # if "icinga_process_check_result" not in config.msg_handler.handle:
-    #     return
+    if "icinga" not in config.roles:
+        return
 
     try:
         jdata = json.loads(data)
