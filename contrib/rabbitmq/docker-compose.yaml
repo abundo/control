@@ -1,0 +1,15 @@
+---
+version: '3.1'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "asfdqweopifjqopjfoisjadfs"
+      RABBITMQ_DEFAULT_USER: "rabbitmquser"
+      RABBITMQ_DEFAULT_PASS: "rabbitmqpass"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+    restart: unless-stopped

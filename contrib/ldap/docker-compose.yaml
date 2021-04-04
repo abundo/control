@@ -1,0 +1,125 @@
+---
+version: '3.7'
+services:
+
+  # ----------------------------------------------------------------------
+  # https://github.com/tiredofit/docker-openldap-fusiondirectory
+  # ----------------------------------------------------------------------
+
+  openldap-fusiondirectory:
+    hostname: ldap1.example.com
+    image: tiredofit/openldap-fusiondirectory
+    container_name: openldap-fusiondirectory-app
+    ports:
+    - 389:389
+    - 636:636
+    volumes:
+    - ./backup:/data/backup
+    - ./data:/var/lib/openldap
+    - ./config:/etc/openldap/slapd.d
+    - ./certs:/certs
+    environment:
+    - HOSTNAME=ldap1.example.com
+    - LOG_LEVEL=256
+    - DOMAIN=example.com
+    - BASE_DN=dc=example,dc=com
+    - ADMIN_PASS=admin
+    - CONFIG_PASS=config
+
+    - FUSIONDIRECTORY_ADMIN_USER=fd-admin
+    - FUSIONDIRECTORY_ADMIN_PASS=admin
+    - ORGANIZATION=Example organisation
+
+    - ENABLE_READONLY_USER=FALSE
+    - READONLY_USER_USER=reader
+    - READONLY_USER_PASS=reader
+
+    - ENABLE_TLS=FALSE
+    - TLS_CRT_FILENAME=cert.pem
+    - TLS_KEY_FILENAME=key.pem
+    - TLS_ENFORCE=FALSE
+    - TLS_CIPHER_SUITE=ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:RSA+AESGCM:RSA+AES:-DHE-DSS:-RSA:!aNULL:!MD5:!DSS:!SHA
+    - TLS_VERIFY_CLIENT=never
+    - SSL_HELPER_PREFIX=ldap
+
+    - ENABLE_REPLICATION=FALSE
+    - REPLICATION_CONFIG_SYNCPROV=binddn="cn=admin,cn=config" bindmethod=simple credentials="admin" searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1
+    - REPLICATION_DB_SYNCPROV=binddn="cn=admin,dc=example,dc=org" bindmethod=simple credentials="admin" searchbase="dc=example,dc=org" type=refreshAndPersist interval=00:00:00:10 retry="60 +" timeout=1
+    - REPLICATION_HOSTS=ldap://ldap1.example.com ldap://ldap2.example.com ldap://ldap3.example.com
+    - REMOVE_CONFIG_AFTER_SETUP=FALSE
+
+    - ENABLE_BACKUP=TRUE
+    - BACKUP_INTERVAL=0400
+    - BACKUP_RETENTION=10080
+
+    - ENABLE_ZABBIX=FALSE
+    - ZABBIX_HOSTNAME=openldap-fusiondirectory-app
+
+    - PLUGIN_AUDIT=TRUE
+    - PLUGIN_DSA=TRUE
+    - PLUGIN_DNS=FALSE
+    - PLUGIN_LDAPDUMP=TRUE
+    - PLUGIN_LDAPMANAGER=TRUE
+    - PLUGIN_PERSONAL=TRUE
+    - PLUGIN_POSIX=TRUE
+    - PLUGIN_PPOLICY=TRUE
+
+    restart: unless-stopped
+
+  # ----------------------------------------------------------------------
+  # https://github.com/tiredofit/docker-fusiondirectory
+  # ----------------------------------------------------------------------
+
+  fusiondirectory-app:
+    container_name: fusiondirectory-app
+    image: tiredofit/fusiondirectory
+    labels:
+    - traefik.enable=false
+    - traefik.frontend.rule=Host:fusiondirectory.example.org
+    - traefik.port=80
+    - traefik.docker.network=proxy
+    - traefik.backend=fusiondirectory-app
+    volumes:
+    - ./logs:/www/logs
+    #- ./custom:/assets/fusiondirectory
+    #- ./plugins-custom:/assets/plugins-custom
+
+    environment:
+    - VIRTUAL_HOST=fusiondirectory.example.com
+    - VIRTUAL_NETWORK=proxy
+    - VIRTUAL_PORT=80
+    #- LETSENCRYPT_HOST=fusiondirectory.example.org
+    #- LETSENCRYPT_EMAIL=yourname@example.org
+
+    - ZABBIX_HOSTNAME=fusiondirectory-app
+    - ENABLE_ARGONAUT=FALSE
+
+    - PLUGIN_AUDIT=TRUE
+    - PLUGIN_DSA=TRUE
+    - PLUGIN_DNS=FALSE
+    - PLUGIN_LDAPDUMP=TRUE
+    - PLUGIN_LDAPMANAGER=TRUE
+    - PLUGIN_PERSONAL=TRUE
+    - PLUGIN_POSIX=TRUE
+    - PLUGIN_PPOLICY=TRUE
+
+#    - LDAP1_HOST=ldap1.example.com
+    - LDAP1_HOST=openldap-fusiondirectory
+    - LDAP1_BASE_DN=dc=example,dc=com
+    - LDAP1_ADMIN_DN=cn=admin,dc=example,dc=com
+    - LDAP1_ADMIN_PASS=admin
+    - LDAP1_NAME=Production
+    - LDAP1_PORT=389
+
+    - LDAP2_TLS=FALSE
+    #- LDAP2_HOST=openldap-fusiondirectory2
+    #- LDAP2_BASE_DN=dc=example,dc=com
+    #- LDAP2_ADMIN_DN=cn=admin,dc=example,dc=com
+    #- LDAP2_ADMIN_PASS=password2
+    #- LDAP2_NAME=Development
+    #- LDAP2_PORT=389
+    #- LDAP2_TLS=TRUE
+
+    restart: unless-stopped
+    ports:
+    - 8000:80
