@@ -13,6 +13,7 @@ zeep
 pynetbox
 PyMySQL
 sphinx-material
+sphinx_rtd_theme
 
 # for emmgr
 ssh2-python
