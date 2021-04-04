@@ -1,6 +1,8 @@
 sync_code.sh
 
-/static
+# Django generated static files
+app/static/*
+app/docs/static/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -13,8 +15,6 @@ __pycache__/
 .vscode/
 
 # Distribution / packaging
-/lib/
-/lib64/
 .Python
 env/
 build/
@@ -81,13 +81,11 @@ bin/
 include/
 share/
 pyvenv.cfg
-lib64
+/lib/
+/lib64
 
 # celery beat schedule file
 celerybeat-schedule
-
-# dotenv
-.env
 
 # virtualenv
 venv/
