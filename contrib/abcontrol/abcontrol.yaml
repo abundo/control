@@ -2,10 +2,37 @@
 default_domain: example.com
 
 # ---------------------------------------------------------------------------
+# Specify what roles this server handles
+# This helps the setup script, and runtime services to know what to process on each
+# server in a multiserver setup
+# ---------------------------------------------------------------------------
+roles:
+  abcontrol: true
+  dns: true
+  icinga: true
+  ldap: true
+  librenms: true
+  oxidized: true
+  netbox: true
+  rabbitmq: true
+
+  becs_sync: true
+
+  save_log: 1
+  sync_netbox_to_device_api: 1
+  icinga_process_check_result: 1
+  update_dns: 1
+  update_icinga: 1
+  update_librenms: 1
+  update_oxidized: 1
+
+# ---------------------------------------------------------------------------
 # Django settings
 # ---------------------------------------------------------------------------
 
 django:
+  # generate secret key with 
+  # python3 -c 'import random; print("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))'
   secret_key: <set secret key here>
   requests_ca_bundle: /etc/ssl/certs/ca-certificates.crt
   language_code: en-us
@@ -18,7 +45,7 @@ django:
     start_tls: false
     bind_dn: ""
     bind_password: ""
-    user_search: ou=people,dc=net,dc=example,dc=com
+    user_search: ou=people,dc=example,dc=com
 
   # ----- abontrol database -----
   
