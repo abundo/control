@@ -559,7 +559,7 @@ class Sync:
             # Update interfaces in correct order, to hande interface name rename collisions
             while interface_updates:
                 for ifname, update in interface_updates.items():
-                    if ifname != update.name:
+                    if "name" in update and ifname != update.name:
                         # name change, make sure new name does not exist - it would cause a collision
                         if update.name in interface_updates:
                             continue    # We update this interface later
