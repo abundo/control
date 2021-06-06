@@ -101,11 +101,11 @@ DATABASES = {}
 if "db" in django_config:
     DATABASES["default"] = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': django_config.db.HOST,
+        'PORT': django_config.db.PORT,
         'NAME': django_config.db.NAME,
         'USER': django_config.db.USER,
         'PASSWORD': django_config.db.PASSWORD,
-        'HOST': django_config.db.HOST,
-        'PORT': django_config.db.PORT,
     }
 else:
     # Dummy database, to be able to run CLI scripts
