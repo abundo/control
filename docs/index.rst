@@ -1,20 +1,17 @@
 Welcome to abcontrol's documentation!
 =====================================
 
-Note: Documentation being written, please stand by!
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   overview
-   installation
-   troubleshooting
-   development
-
-
-
+   Introduction
+   Installation
+   Configuration
+   Core functionality <Core_functionality>
+   Plugins
+   Administration
+   Development
 
 
 Indices and tables
