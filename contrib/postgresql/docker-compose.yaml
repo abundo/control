@@ -7,13 +7,14 @@ services:
     - "5432:5432"
     restart: unless-stopped
     environment:
-      POSTGRES_DB: abcontrol
-      POSTGRES_USER: abcontrol
-      POSTGRES_PASSWORD: absecret
+      POSTGRES_DB: {{ POSTGRES_DB }}
+      POSTGRES_USER: {{ POSTGRES_USER }}
+      POSTGRES_PASSWORD: {{ POSTGRES_PASSWORD }}
     volumes:
       - "./pgdata:/var/lib/postgresql/data"
-  adminer:
-      image: adminer
-      restart: unless-stopped
-      ports:
-      - 8181:8080
+
+#  adminer:
+#      image: adminer
+#      restart: unless-stopped
+#      ports:
+#      - 8181:8080

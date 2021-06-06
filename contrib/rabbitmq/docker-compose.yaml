@@ -5,9 +5,9 @@ services:
     image: rabbitmq:3-management-alpine
     hostname: rabbitmq
     environment:
-      RABBITMQ_ERLANG_COOKIE: "asfdqweopifjqopjfoisjadfs"
-      RABBITMQ_DEFAULT_USER: "rabbitmquser"
-      RABBITMQ_DEFAULT_PASS: "rabbitmqpass"
+      RABBITMQ_ERLANG_COOKIE: {{ RABBITMQ_ERLANG_COOKIE }}
+      RABBITMQ_DEFAULT_USER: {{ RABBITMQ_USERNAME }}
+      RABBITMQ_DEFAULT_PASS: {{ RABBITMQ_PASSWORD }}
       RABBITMQ_DEFAULT_VHOST: "/"
     ports:
     - "5672:5672"

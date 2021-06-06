@@ -1,5 +1,5 @@
 ---
-default_domain: example.com
+default_domain: {{ DEFAULT_DOMAIN }}
 
 # ---------------------------------------------------------------------------
 # Specify what roles this server handles
@@ -15,70 +15,51 @@ roles:
   oxidized: true
   netbox: true
   rabbitmq: true
-
+  freeradius: true
   becs_sync: true
-
-  save_log: 1
-  sync_netbox_to_device_api: 1
-  icinga_process_check_result: 1
-  update_dns: 1
-  update_icinga: 1
-  update_librenms: 1
-  update_oxidized: 1
 
 # ---------------------------------------------------------------------------
 # Django settings
 # ---------------------------------------------------------------------------
 
 django:
-  # generate secret key with 
-  # python3 -c 'import random; print("".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))'
-  secret_key: <set secret key here>
+  secret_key: {{ DJANGO_SECRET_KEY }}
+  language_code: {{ DJANGO_LANGUAGE_CODE }}
+  time_zone: {{ DJANGO_TIME_ZONE }}
   requests_ca_bundle: /etc/ssl/certs/ca-certificates.crt
-  language_code: en-us
-  time_zone: Europe/Stockholm
   
   # ----- ldap -----
   ldap:
     enabled: true
-    server: ldap://127.0.0.1
-    start_tls: false
-    bind_dn: ""
-    bind_password: ""
-    user_search: ou=people,dc=example,dc=com
+    server: {{ LDAP_SERVER }}
+    start_tls: {{ LDAP_START_TLS }}
+    bind_dn: {{ LDAP_BIND_DN }}
+    bind_password: {{ LDAP_BIND_PASSWORD }}
+    user_search: {{ LDAP_USER_SEARCH }}
 
   # ----- abontrol database -----
   
   db:
-    NAME: abcontrol
-    USER: abcontrol
-    PASSWORD: <set postgres password>
-    HOST: 127.0.0.1
-    PORT: 5432
+    NAME: {{ DJANGO_DB_NAME }}
+    USER: {{ DJANGO_DB_USER }}
+    PASSWORD: {{ DJANGO_DB_PASSWORD }}
+    HOST: {{ DJANGO_DB_HOST }}
+    PORT: {{ DJANGO_DB_PORT }}
 
 # ---------------------------------------------------------------------------
 # API
 # ---------------------------------------------------------------------------
 api:
   control:
-    url: https://control.example.com/api
+    url: {{ API_CONTROL_URL }}       # https://control.example.com/api
   device:
-    url: https://control.example.com/api/device
+    url: {{ API_DEVICE_URL }}        # https://control.example.com/api/device
   dhcp_clients:
-    url: http://control.example.com/dhcpd-clients.php
-
-# ---------------------------------------------------------------------------
-# Device-API
-# ---------------------------------------------------------------------------
-
-# todo, replace with above api.device
-device:
-  api:
-    url: https://control.example.com/api/device
+    url: {{ API_DHCP_CLIENTS_URL }}  # http://control.example.com/dhcpd-clients.php
 
 
 # ---------------------------------------------------------------------------
-# Message bus
+# Rabbitmq message bus
 # ---------------------------------------------------------------------------
 
 rabbitmq:
@@ -86,17 +67,6 @@ rabbitmq:
   username: abtools_control
   password: <set rabbitmq password>
 
-# Specify what roles this server handles
-msg_handler:
-  handle:
-    save_log: 1
-    sync_becs_to_netbox: 1
-    sync_netbox_to_device_api: 1
-    icinga_process_check_result: 1
-    update_dns: 1
-    update_icinga: 1
-    update_librenms: 1
-    update_oxidized: 1
 
 # ---------------------------------------------------------------------------
 # NetBox
@@ -113,7 +83,7 @@ netbox:
 # ---------------------------------------------------------------------------
 
 sync_dns:
-  dest_record_file: /etc/dnsmgr/records_from_element_api
+  dest_record_file: /etc/dnsmgr/records_from_device_api
   
   ignore_models:
     waystream: 1
@@ -248,6 +218,7 @@ icinga_sync:
       groups = [ "icingaadmins" ]
     }
 
+{% raw %}
   host_template: |
 
     object Host "{{device.name}}" {
@@ -279,3 +250,4 @@ icinga_sync:
       display_name = "{displayname}"
       email = "{email}"
     }}
+{% endraw %}

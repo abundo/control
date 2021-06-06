@@ -1,0 +1,16 @@
+radius:
+  image: irasnyd/freeradius-ldap:latest
+  ports:
+    - "1812:1812/udp"
+    - "1813:1813/udp"
+  environment:
+    - "LDAP_HOST={{ LDAP_SERVER }}"
+    - "LDAP_USER=cn=admin,dc=itn,dc=nu"
+    - "LDAP_PASS=admin"
+    - "LDAP_BASEDN=dc=itn,dc=nu"
+    - "LDAP_USER_BASEDN=ou=people,dc=itn,dc=nu"
+    - "LDAP_GROUP_BASEDN=ou=groups,dc=itn,dc=nu"
+    - "LDAP_RADIUS_ACCESS_GROUP=radius"
+    - "RADIUS_CLIENT_CREDENTIALS=0.0.0.0/0:offer48simple70both"
+  mem_limit: "1g"
+  restart: unless-stopped

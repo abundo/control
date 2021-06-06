@@ -7,7 +7,7 @@ services:
   # ----------------------------------------------------------------------
 
   openldap-fusiondirectory:
-    hostname: ldap1.example.com
+    hostname: {{ LDAP_SERVER }}   # ldap1.example.com
     image: tiredofit/openldap-fusiondirectory
     container_name: openldap-fusiondirectory-app
     ports:
@@ -19,16 +19,16 @@ services:
     - ./config:/etc/openldap/slapd.d
     - ./certs:/certs
     environment:
-    - HOSTNAME=ldap1.example.com
+    - HOSTNAME={{ LDAP_SERVER }}
     - LOG_LEVEL=256
-    - DOMAIN=example.com
+    - DOMAIN={{ DEFAULT_DOMAIN }}
     - BASE_DN=dc=example,dc=com
-    - ADMIN_PASS=admin
-    - CONFIG_PASS=config
+    - ADMIN_PASS={{ LDAP_ADMIN_PASSWORD }}
+    - CONFIG_PASS={{ LDAP_CONFIG_PASSWORD }}
 
-    - FUSIONDIRECTORY_ADMIN_USER=fd-admin
-    - FUSIONDIRECTORY_ADMIN_PASS=admin
-    - ORGANIZATION=Example organisation
+    - FUSIONDIRECTORY_ADMIN_USER={{ FUSIONDIRECTORY_ADMIN_USER }}
+    - FUSIONDIRECTORY_ADMIN_PASS={{ FUSIONDIRECTORY_ADMIN_PASS }}
+    - ORGANIZATION={{ FUSIONDIRECTORY_ORGANIZATION }}
 
     - ENABLE_READONLY_USER=FALSE
     - READONLY_USER_USER=reader
