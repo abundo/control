@@ -1,4 +1,4 @@
-# apt install libsasl2-dev libldap2-dev libssl-dev
+# to build python-ldap: apt install libsasl2-dev libldap2-dev libssl-dev
 wheel
 psycopg2-binary
 django~=2.2.10
@@ -14,6 +14,7 @@ pynetbox
 PyMySQL
 sphinx-material
 sphinx_rtd_theme
+python-dotenv
 
 # for emmgr
 ssh2-python
