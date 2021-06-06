@@ -361,20 +361,21 @@ def get_netbox_devices(name=None):
     src = "netbox"
     with transaction.atomic():
         print("----- Deleting old Netbox data from database (in a transaction) -----")
-        if len(devices) > 1:
-            Device.objects.filter(field_src=src).delete()
-        else:
-            d = list(devices.values())[0]
-            name = full_name(d.name)
-            Device.objects.filter(name=name).delete()
+        if len(devices):
+            if len(devices) > 1:
+                Device.objects.filter(field_src=src).delete()
+            else:
+                d = list(devices.values())[0]
+                name = full_name(d.name)
+                Device.objects.filter(name=name).delete()
 
-        # Parse responses from Netbox, virtual machines
-        print("----- Parse and save Netbox virtual machines -----")
-        parse_netbox_data(src=src, devices=vmdevices, interfaces=vminterfaces, addresses=addresses, vm=True)
+            # Parse responses from Netbox, virtual machines
+            print("----- Parse and save Netbox virtual machines -----")
+            parse_netbox_data(src=src, devices=vmdevices, interfaces=vminterfaces, addresses=addresses, vm=True)
 
-        # Parse responses from Netbox, devices
-        print("----- Parse and save Netbox devices -----")
-        parse_netbox_data(src=src, devices=devices, interfaces=interfaces, addresses=addresses)
+            # Parse responses from Netbox, devices
+            print("----- Parse and save Netbox devices -----")
+            parse_netbox_data(src=src, devices=devices, interfaces=interfaces, addresses=addresses)
 
 
 def main(name=None):
