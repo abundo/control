@@ -85,7 +85,7 @@ def devices(request, name: str = None):
     device_cache = Device_Cache(config=config, cache_cls=Cache)
     try:
         devices = device_cache.get_devices(name=name)
-        if devices:
+        if devices is not None:
             return JsonResponse(devices)
         raise Http404("Database does not contain devices from netbox and becs")
     except Device_Cache.exception as err:
