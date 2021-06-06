@@ -248,7 +248,7 @@ def main() -> None:
     oxidized_mgr = Oxidized_Mgr(config=config.oxidized)
 
     print("----- Get devices from Device-API -----")
-    device_mgr = Device_Mgr(config=config.device)
+    device_mgr = Device_Mgr(config=config.api.device)
     devices = device_mgr.get_devices()
     
     add_devices_api_hosts(devices=devices, records=records)
