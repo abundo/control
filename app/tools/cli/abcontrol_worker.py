@@ -100,7 +100,7 @@ def background_log_worker():
     Listen on rabbitmq messages, and store them in the database
     This is running as a separate process, using a dedicated connection to rabbitmq
     """
-    print("Starting background process, listening on rabbitmq logs and saving entries to database")
+    print("Starting worker process, listening on rabbitmq logs and saving entries to database")
 
     # Connect to rabbitmq
     rabbitmq = common.Rabbitmq_Mgr(config.rabbitmq)
@@ -115,7 +115,7 @@ def background_log_worker():
                     f.write(str(vars(log_entry)))
                 log_entry.save()
             else:
-                print("ERROR: background_log_worker got something with xid in the message", log_entry_json)
+                print("ERROR: abcontrol_worker got something with xid in the message", log_entry_json)
 
 
 def background_netbox_webhook_worker():
@@ -123,7 +123,7 @@ def background_netbox_webhook_worker():
     Listen on netbox webhook calls, and perform the correct action
     This is running as a separate process, using a dedicated connection to rabbitmq
     """
-    print("Starting background process, listening on netbox webhook calls")
+    print("Starting abcontrol_worker process, listening on netbox webhook calls")
     rabbitmq = common.Rabbitmq_Mgr(config.rabbitmq)
     rabbitmq.exchange_cmd_send()
 

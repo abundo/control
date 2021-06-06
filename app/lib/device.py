@@ -22,7 +22,7 @@ from lib.netbox import Netbox
 class Device_Cache:
     """
     Manage cache of Netbox devices, saved as a JSON string in the database table
-    This is used by the device-api, to be able to respond with delay
+    This is used by the device-api, to respond without significant delay
     """
 
     exception = Netbox.exception
