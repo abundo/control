@@ -155,7 +155,9 @@ def run_cmd(data=None, name: str = None, directory=None, cmd: str = None):
     try:
         with Capturing():
             os.chdir("/opt/abcontrol/app")
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+            my_env = os.environ.copy()
+            my_env["PYTHONPATH"] = "/opt"
+            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, env=my_env)
             for line in p.stdout:
                 line = line.rstrip()
                 print(line)
