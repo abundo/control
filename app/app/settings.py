@@ -36,9 +36,10 @@ django_config = config.django
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = django_config.secret_key
 
-if "requests_ca_bundle" in django_config:
+tmp = django_config.get("requests_ca_bundle", None)
+if tmp:
     # Use specified CA certificates
-    os.environ["REQUESTS_CA_BUNDLE"] = django_config.requests_ca_bundle
+    os.environ["REQUESTS_CA_BUNDLE"] = tmp
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
