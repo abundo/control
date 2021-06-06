@@ -196,7 +196,7 @@ def update_dns(data):
 
 
 def update_librenms(data):
-    if "librenms" not in config.roles
+    if "librenms" not in config.roles:
         return
     run_cmd(data=data,
             name="update_librenms()",
@@ -205,7 +205,7 @@ def update_librenms(data):
 
 
 def update_oxidized(data):
-    if "oxidized" not in config.roles
+    if "oxidized" not in config.roles:
         return
     run_cmd(data=data,
             name="update_oxidized()",
