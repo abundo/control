@@ -275,10 +275,6 @@ def main():
         proc_log = multiprocessing.Process(target=background_log_worker)
         proc_log.start()
 
-    if "netbox_webhook_listener" in config.msg_handler.handle:
-        proc_netbox = multiprocessing.Process(target=background_netbox_webhook_worker)
-        proc_netbox.start()
-
     rabbitmq = common.Rabbitmq_Mgr(config.rabbitmq)
     rabbitmq.exchange_cmd_receive()
     print("Waiting for commands from Rabbitmq")
