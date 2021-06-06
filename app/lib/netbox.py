@@ -202,13 +202,13 @@ class Netbox:
                 else:
                     tmp = ""
                 d.alarm_timeperiod = tmp
-            except (AttributeError, NameError, TypeError):
+            except (KeyError, AttributeError, NameError, TypeError):
                 d.alarm_timeperiod = ""
 
             try:
                 # d.alarm_destination = custom_fields["alarm_destination"]["label"]
                 d.alarm_destination = custom_fields["alarm_destination"]
-            except (AttributeError, NameError, TypeError):
+            except (KeyError, AttributeError, NameError, TypeError):
                 d.alarm_destination = []
 
             try:
@@ -220,7 +220,7 @@ class Netbox:
 
             try:
                 # tmp = custom_fields["connection_method"]["label"]
-                tmp = custom_fields["connection_method"]
+                tmp = custom_fields.get("connection_method", "")
                 d.connection_method = tmp
             except (TypeError, AttributeError, NameError):
                 d.connection_method = ""
