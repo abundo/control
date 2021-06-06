@@ -271,7 +271,7 @@ def icinga_process_check_result(data):
 def main():
     global rabbitmq
 
-    if "save_log" in config.msg_handler.handle:
+    if config.roles.get("abcontrol", False):
         proc_log = multiprocessing.Process(target=background_log_worker)
         proc_log.start()
 
