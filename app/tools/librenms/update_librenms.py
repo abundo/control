@@ -209,7 +209,22 @@ def main():
     if len(create_in_librenms):
         for name in create_in_librenms:
             print("   ", name)
-            librenms_mgr.create_device(name=name, force_add=1)
+            try:
+                community_list = config.librenms.snmp.community
+            except KeyError:
+                community_list = None
+            created = False
+            if community_list:
+                for community in community_list:
+                    r = librenms_mgr.create_device(name=name, force_add=0, community=community)
+                    if r["status"] == "ok":
+                        created = True
+                        break
+            if not created:
+                # No community, or all communities we tried failed
+                # Create, with default community, force
+                r = librenms_mgr.create_device(name=name, force_add=1)
+
     else:
         print("    None")
     
