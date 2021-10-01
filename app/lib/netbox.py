@@ -278,7 +278,7 @@ class Netbox:
                     addr = AttrDict(
                         address=address.address,
                         id=address.id,
-                        becs_oid=address.custom_fields["becs_oid"],
+                        becs_oid=address.custom_fields.get("becs_oid", None),
                     )
                     if ":" in address.address:
                         prefix6.append(addr)
