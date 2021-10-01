@@ -52,7 +52,7 @@ def main():
     oxidized_mgr = Oxidized_Mgr(config=config.oxidized)
     
     print("----- Get devices from device-api -----")
-    device_mgr = Device_Mgr(config=config.device)
+    device_mgr = Device_Mgr(config=config.api.device)
     tmp_devices = device_mgr.get_devices()
 
     print("----- Filter devices that do not need backup -----")
@@ -107,7 +107,7 @@ def main():
     print("Total      : %5d devices" % (len(devices) + len(config.oxidized_sync.persistent_devices)))
     print()
     
-    t = config.oxidized.router_db
+    t = config.oxidized_sync.router_db
     changed = False
     count = oxidized_mgr.save_devices(t.tmp,
                                       devices,

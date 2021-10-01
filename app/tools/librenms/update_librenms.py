@@ -135,7 +135,7 @@ def main():
     librenms_mgr = Librenms_Mgr(config=config)
     librenms_devices = librenms_mgr.get_devices()
     
-    device_mgr = Device_Mgr(config=config.device)
+    device_mgr = Device_Mgr(config=config.api.device)
     devices = device_mgr.get_devices()
 
     create_in_librenms = []
