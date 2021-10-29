@@ -124,7 +124,7 @@ class Setup():
         if not os.path.exists(f"{HOME}/bin"):
             print_subheader("Creating python venv")
             self.cli.run(f"cd {HOME}/..")
-            self.cli.run("python3 -m venv abtools")
+            self.cli.run("python3 -m venv abcontrol")
 
         print_subheader("Activating python venv")
         self.cli.run(f"cd {HOME}")
