@@ -150,7 +150,7 @@ Install::
     apt install libsasl2-dev libldap2-dev libssl-dev
 
     # Python virtual environment, Access control
-    apt install python3-venv acl
+    apt install python3-pip python3-venv acl
 
     # Docker
     apt install docker docker-compose
