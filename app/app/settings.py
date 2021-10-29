@@ -159,11 +159,19 @@ AUTHENTICATION_BACKENDS = [
 
 try:
     if django_config.ldap.enabled:
-        AUTHENTICATION_BACKENDS.append("django_auth_ldap.backend.LDAPBackend")
-        AUTH_LDAP_SERVER_URI = django_config.ldap.server
-        AUTH_LDAP_START_TLS = django_config.ldap.get("start_tls", False)
-        AUTH_LDAP_BIND_DN = django_config.ldap.bind_dn
-        AUTH_LDAP_BIND_PASSWORD = django_config.ldap.bind_password
-        AUTH_LDAP_USER_SEARCH = LDAPSearch(django_config.ldap.user_search, ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
-except AttributeError:
-    pass
+        l = django_config.ldap
+        AUTHENTICATION_BACKENDS.insert(0, "django_auth_ldap.backend.LDAPBackend")
+        AUTH_LDAP_SERVER_URI = l.server
+        AUTH_LDAP_START_TLS = l.get("start_tls", False)
+        AUTH_LDAP_BIND_DN = l.bind_dn
+        AUTH_LDAP_BIND_PASSWORD = l.bind_password
+        AUTH_LDAP_USER_SEARCH = LDAPSearch(l.user_search, ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+
+        if 0:
+            import logging
+            logger = logging.getLogger('django_auth_ldap')
+            logger.addHandler(logging.StreamHandler())
+            logger.setLevel(logging.DEBUG)
+
+except AttributeError as err:
+    print("LDAP setup error:", err)
