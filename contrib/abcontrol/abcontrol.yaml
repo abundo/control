@@ -3,20 +3,39 @@ default_domain: {{ DEFAULT_DOMAIN }}
 
 # ---------------------------------------------------------------------------
 # Specify what roles this server handles
-# This helps the setup script, and runtime services to know what to process on each
-# server in a multiserver setup
+# This helps the setup script and runtime services to know what to process
+# on each server in a multiserver setup
 # ---------------------------------------------------------------------------
+
+# Globally enabled roles
+# Used by the periodic.py script, and web gui sync page
+enabled_roles:
+  abcontrol: true
+  rabbitmq: true
+  openldap: true
+
+  becs_sync: false
+  dns: false
+  freeradius: false
+  icinga: false
+  librenms: false
+  netbox: false
+  oxidized: false
+
+# Used by abcontrol_worker.py service
+# This is tailored differently on each server running abcontrol
 roles:
   abcontrol: true
-  dns: true
-  icinga: true
-  ldap: true
-  librenms: true
-  oxidized: true
-  netbox: true
+  openldap: true
   rabbitmq: true
-  freeradius: true
-  becs_sync: true
+
+  becs_sync: false
+  dns: false
+  freeradius: false
+  icinga: false
+  librenms: false
+  netbox: false
+  oxidized: false
 
 # ---------------------------------------------------------------------------
 # Django settings

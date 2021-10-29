@@ -145,7 +145,10 @@ def ping(data):
     """
     Return a response, we are alive!
     """
-    handles: str = ", ".join(config.roles.keys())
+    roles = []
+    for role, val in config.roles.items():
+        if val: roles.append(role)
+    handles: str = ", ".join(roles)
     log(f"Ping response: from {platform.node()}. handles {handles}")
     rabbitmq.send_log("Done", msgid=data["xid"])
 
@@ -170,62 +173,55 @@ def run_cmd(data=None, name: str = None, directory=None, cmd: str = None):
 
 
 def sync_becs_to_netbox(data):
-    if "becs" not in config.roles:
-        return
-    run_cmd(data=data,
-            name="sync_becs_to_netbox",
-            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/becs/sync_becs_to_netbox.py", "--refresh-becs", "--refresh-netbox"]
-    )
+    if config.roles.get("becs", False):
+        run_cmd(data=data,
+                name="sync_becs_to_netbox",
+                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/becs/sync_becs_to_netbox.py", "--refresh-becs", "--refresh-netbox"]
+        )
 
 
 def sync_netbox_to_device_api(data):
-    if "abcontrol" not in config.roles:
-        return
-    run_cmd(data=data,
-            name="sync_netbox_to_device_api",
-            # cmd=["/opt/abcontrol/bin/python3", "-u", "app/tools/netbox/sync_netbox_to_device_api.py", "--refresh-netbox"]
-            cmd=["/opt/abcontrol/bin/python3", "-u", "lib/device.py", "refresh-device-cache"]
-    )
+    if config.roles.get("abcontrol", False):
+        run_cmd(data=data,
+                name="sync_netbox_to_device_api",
+                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/netbox/netbox_cli.py", "refresh-device-cache"]
+        )
 
 
 def update_dns(data):
-    if "dns" not in config.roles:
-        return
-    run_cmd(data=data,
-            name="update_dns()",
-            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/dns/update_dns.py"]
-    )
+    if config.roles.get("dns", False):
+        run_cmd(data=data,
+                name="update_dns()",
+                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/dns/update_dns.py"]
+        )
 
 
 def update_librenms(data):
-    if "librenms" not in config.roles:
-        return
-    run_cmd(data=data,
-            name="update_librenms()",
-            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/librenms/update_librenms.py"]
-    )
+    if config.roles.get("librenms", False):
+        run_cmd(data=data,
+                name="update_librenms()",
+                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/librenms/update_librenms.py"]
+        )
 
 
 def update_oxidized(data):
-    if "oxidized" not in config.roles:
-        return
-    run_cmd(data=data,
-            name="update_oxidized()",
-            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/oxidized/update_oxidized.py"]
-    )
+    if config.roles.get("oxidized", False):
+        run_cmd(data=data,
+                name="update_oxidized()",
+                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/oxidized/update_oxidized.py"]
+        )
     
 
 def update_icinga(data):
-    if "icinga" not in config.roles:
-        return
-    run_cmd(data=data,
-            name="update_icinga()",
-            cmd=["/opt/abcontrol/bin/python3", "-u", "tools/icinga/update_icinga.py"]
-    )
+    if config.roles.get("icinga", False):
+        run_cmd(data=data,
+                name="update_icinga()",
+                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/icinga/update_icinga.py"]
+        )
 
 
 def icinga_process_check_result(data):
-    if "icinga" not in config.roles:
+    if not config.roles.get("icinga", False):
         return
 
     try:

@@ -59,36 +59,58 @@ def run_cmd(cmd: str) -> None:
 
 
 def main() -> None:
-    print("-----sync_becs_to_netbox -----")
-    run_cmd("tools/becs/sync_becs_to_netbox.py --refresh-becs --refresh-netbox")
 
-    # Above sync may have changed netbox, so we need to refresh all data again
-    print("----- sync_netbox_to_cache -----")
-    run_cmd("tools/netbox/netbox_cli.py refresh-device-cache")
+    # ----- get data into netbox -----
 
-    print("Update DNS")
-    run_cmd("tools/dns/update_dns.py")
+    if config.enabled_roles.get("becs_sync", False):
+        print("-----sync_becs_to_netbox -----")
+        run_cmd("tools/becs/sync_becs_to_netbox.py --refresh-becs --refresh-netbox")
 
-    print("Update Librenms")
-    url = f"{config.api.control.url}/cmd/send/update_librenms"
-    print(url)
-    r = requests.get(url)
-    print(r.text)
-    # base/abcontrol_cli.py update_librenms
+    # ----- update netbox cache -----
+    if config.enabled_roles.get("netbox", False):
+        # Above sync may have changed netbox, so we need to refresh all data again
+        print("----- sync_netbox_to_cache -----")
+        run_cmd("tools/netbox/netbox_cli.py refresh-device-cache")
 
-    print("Update Oxidized")
-    url = f"{config.api.control.url}/cmd/send/update_oxidized"
-    print(url)
-    r = requests.get(url)
-    print(r.text)
-    # base/abcontrol_cli.py update_oxidized
+    # ----- update systems with data from netbox -----
 
-    print("Update Icinga")
-    url = f"{config.api.control.url}/cmd/send/update_icinga"
-    print(url)
-    r = requests.get(url)
-    print(r.text)
-    # base/abcontrol_cli.py update_icinga
+    if config.enabled_roles.get("dns", False):
+        print("----- Update DNS -----")
+        run_cmd("tools/dns/update_dns.py")
+
+    if config.enabled_roles.get("freeradius", False):
+        print("----- Update Freeradius -----")
+        print("Not implemented")
+        #run_cmd("tools/freeradius/update_freeradius.py")
+
+    if config.enabled_roles.get("icinga", False):
+        print("Update Icinga")
+        url = f"{config.api.control.url}/cmd/send/update_icinga"
+        print(url)
+        r = requests.get(url)
+        print(r.text)
+        # base/abcontrol_cli.py update_icinga
+
+    if config.enabled_roles.get("ldap", False):
+        print("----- Update LDAP -----")
+        print("Not implemented")
+        #run_cmd("tools/freeradius/update_freeradius.py")
+
+    if config.enabled_roles.get("librenms", False):
+        print("Update Librenms")
+        url = f"{config.api.control.url}/cmd/send/update_librenms"
+        print(url)
+        r = requests.get(url)
+        print(r.text)
+        # base/abcontrol_cli.py update_librenms
+
+    if config.enabled_roles.get("oxidized", False):
+        print("Update Oxidized")
+        url = f"{config.api.control.url}/cmd/send/update_oxidized"
+        print(url)
+        r = requests.get(url)
+        print(r.text)
+        # base/abcontrol_cli.py update_oxidized
 
     timestamp = timezone.now() - datetime.timedelta(days=1)
     print("Deleting log entries older than", timestamp)
