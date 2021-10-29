@@ -42,9 +42,11 @@ def log(request, id_: int = None, tzoffset=None):
     """
     response = []
     if id_:
-        result = Log_Entry.objects.order_by("-serialid").filter(id__gt=id_)[:10]
+#        result = Log_Entry.objects.order_by("-serialid").filter(id__gt=id_)[:10]
+        result = Log_Entry.objects.order_by("-id").filter(id__gt=id_)[:10]
     else:
-        result = Log_Entry.objects.order_by("-serialid")[:500]
+#        result = Log_Entry.objects.order_by("-serialid")[:500]
+        result = Log_Entry.objects.order_by("-id")[:500]
     for r in result:
         # convert timestamp to iso-8601
         timestamp = r.timestamp

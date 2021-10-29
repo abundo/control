@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('timestamp', models.DateTimeField(default=django.utils.timezone.now)),
-                ('serialid', base.models.SerialField(default=base.models.get_next_log_serialid_seq, editable=False, unique=True)),
+#                ('serialid', base.models.SerialField(default=base.models.get_next_log_serialid_seq, editable=False, unique=True)),
                 ('facility', models.IntegerField(null=True)),
                 ('severity', models.IntegerField(null=True)),
                 ('hostname', models.CharField(blank=True, default='', max_length=255)),

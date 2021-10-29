@@ -113,22 +113,9 @@ class Control(models.Model):
         return f"{self.sync_name} | {self.timestamp}"
 
 
-class SerialField(models.IntegerField):
-    def db_type(self, connection):
-        return 'serial'
-
-
-def get_next_log_serialid_seq():
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT nextval('log_serialid_seq')")
-        result = cursor.fetchone()
-        return result[0]
-
-
 # Loosely based on RFC5424
 class Log_Entry(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
-    serialid = SerialField(default=get_next_log_serialid_seq, editable=False, unique=True)
     facility = models.IntegerField(null=True)
     severity = models.IntegerField(null=True)
     hostname = models.CharField(max_length=255, blank=True, default="")
@@ -140,3 +127,4 @@ class Log_Entry(models.Model):
     class Meta:
         # managed = False
         db_table = "log"
+
