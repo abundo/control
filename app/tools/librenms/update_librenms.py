@@ -223,7 +223,11 @@ def main():
             if not created:
                 # No community, or all communities we tried failed
                 # Create, with default community, force
-                r = librenms_mgr.create_device(name=name, force_add=1)
+                if community_list:
+                    community = community_list[0]
+                else:
+                    community = None
+                r = librenms_mgr.create_device(name=name, force_add=1, community=community)
 
     else:
         print("    None")
