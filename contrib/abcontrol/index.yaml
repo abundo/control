@@ -3,7 +3,7 @@ index:
 
   # ------ Group -----
 
-  - name: Interna system
+  - name: Internal system
     links:
       - name:        BECS
         description: Management of access-switches, services
@@ -55,7 +55,7 @@ index:
         
   # ------ Group -----
 
-  - name: Externa system
+  - name: External system
     links:
       - name:        Netrounds
         description: Service monitoring
