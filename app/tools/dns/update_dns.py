@@ -8,6 +8,7 @@
 
 # python standard modules
 import os
+import re
 import sys
 import ipaddress
 
@@ -83,7 +84,7 @@ class Config_Parser:
                     break   # end if this interface config
                 line = line.strip()
                 if line.startswith("ip address "):
-                    addr = line[11:].split()[0]
+                    addr = re.split(" |/", line[11:])[0]
                     try:
                         tmp = ipaddress.IPv4Address(addr)
                         record = AttrDict(hostname=name, type="A", value=addr, host=False)
@@ -93,23 +94,23 @@ class Config_Parser:
                         print(f"Error: host '{name}' , incorrect 'ip address' '{addr}', err '{e}'")
 
                 elif line.startswith("ipv4 address "):
-                    addr = line[12:].split()[0]
+                    addr = re.split(" |/", line[13:])[0]
                     try:
                         tmp = ipaddress.IPv4Address(addr)
                         record = AttrDict(hostname=name, type="A", value=addr, host=False)
                         if name not in records:
                             records[name] = record
-                    except ipaddress.AddressValueError:
+                    except ipaddress.AddressValueError as e:
                         print(f"Error: host '{name}' , incorrect 'ipv4 address' '{addr}', err '{e}'")
 
                 elif line.startswith("ipv6 address "):
-                    addr = line[13:].split("/")[0]
+                    addr = re.split(" |/", line[13:])[0]
                     try:
                         tmp = ipaddress.IPv6Address(addr)
                         record = AttrDict(hostname=name, type="AAAA", value=addr, host=False)
                         if name not in records:
                             records[name] = record
-                    except ipaddress.AddressValueError:
+                    except ipaddress.AddressValueError as e:
                         print(f"Error: host '{name}' , incorrect 'ipv6 address' '{addr}', err '{e}'")
                         print("Error: hostname '%s', ipv6_addr '%s' incorrect" % (name, addr))
                 
