@@ -168,6 +168,7 @@ class Rabbitmq_Mgr:
         Works as a generator, this is blocking
         """
         for method_frame, properties, body in self.channel.consume(self.cmd_queue_name):
+            self.channel.basic_ack(method_frame.delivery_tag)
             data = json.loads(body)
             yield data
 
@@ -205,5 +206,6 @@ class Rabbitmq_Mgr:
         Works as a generator, this is blocking
         """
         for method_frame, properties, body in self.channel.consume(self.log_queue_name):
+            self.channel.basic_ack(method_frame.delivery_tag)
             data = json.loads(body)
             yield data
