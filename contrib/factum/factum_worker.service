@@ -1,0 +1,18 @@
+[Unit]
+Description=factum background worker
+After=network.target
+
+[Service]
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+PassEnvironment=PYTHONDONTWRITEBYTECODE PYTHONUNBUFFERED
+#User=www-data
+#Group=www-data
+Type=simple
+WorkingDirectory=/opt/factum/app
+ExecStart=/opt/factum/venv/bin/python3 -u /opt/factum/app/tools/cli/factum_worker.py
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -18,7 +18,7 @@ from ablib.icinga import Icinga
 
 # ----- Start of configuration items -----
 
-CONFIG_FILE = "/etc/abcontrol/abcontrol.yaml"
+CONFIG_FILE = "/etc/factum/factum.yaml"
 
 TABLE = '<TABLE style="border-collapse: collapse;">'
 TR = '<TR style="border-top: 1px solid black; vertical-align:top;">'

@@ -1,4 +1,4 @@
-Welcome to abcontrol's documentation!
+Welcome to factum's documentation!
 =====================================
 
 .. toctree::

@@ -15,7 +15,7 @@ import html
 
 # ----- Start of configuration items -----
 
-CONFIG_FILE = "/etc/abcontrol/abcontrol.yaml"
+CONFIG_FILE = "/etc/factum/factum.yaml"
 
 TABLE = '<table style="border-collapse: collapse;">'
 TR = '<tr style="border-top: 1px solid black; vertical-align:top;">'

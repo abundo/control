@@ -11,13 +11,17 @@ import ablib.utils as abutils
 
 def home(request):
     # Load file with links
-    links = abutils.load_config("/etc/abcontrol/index.yaml")
+    links = abutils.load_config("/etc/factum/index.yaml")
     return render(request, 'base/index.html', {"links": links})
 
 
 @login_required
 def sync(request):
-    return render(request, 'base/sync.html')
+    return render(request, 'base/sync.html', 
+        {
+            "enabled_roles": config.enabled_roles,
+        }
+    )
 
 
 def dhcpd_leases(request):

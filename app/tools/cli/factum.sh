@@ -6,4 +6,4 @@ source venv/bin/activate
 
 # run script
 cd /opt/factum/app
-python3 -u tools/cli/periodic.py
+tools/cli/factum.py $@

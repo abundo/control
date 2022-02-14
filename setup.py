@@ -13,9 +13,9 @@ import argparse
 import subprocess
 import yaml
 
-HOME = "/opt/abcontrol"
-CONFIG_FILE = "/etc/abcontrol/abcontrol.yaml"
-ENV_FILE = "/etc/abcontrol/abcontrol.env"
+HOME = "/opt/factum"
+CONFIG_FILE = "/etc/factum/factum.yaml"
+ENV_FILE = "/etc/factum/factum.env"
 
 
 def print_header(msg):
@@ -120,17 +120,17 @@ class Setup():
 
     # ----------------------------------------------------------------------------+
     def setup_venv(self):
-        print_subheader("Setup/activate abcontrol python virtual environment")
-        if not os.path.exists(f"{HOME}/bin"):
+        print_subheader("Setup/activate factum python virtual environment")
+        if not os.path.exists(f"{HOME}/venv"):
             print_subheader("Creating python venv")
-            self.cli.run(f"cd {HOME}/..")
-            self.cli.run("python3 -m venv abcontrol")
+            self.cli.run(f"cd {HOME}")
+            self.cli.run("python3 -m venv venv")
 
         print_subheader("Activating python venv")
         self.cli.run(f"cd {HOME}")
         self.cli.run("source bin/activate")
 
-        print_subheader("Install abcontrol dependencies")
+        print_subheader("Install factum dependencies")
         self.cli.run(f"cd {HOME}")
         self.cli.run(f"pip3 install -q -r requirements.txt -r docs/requirements.txt")
         print("done")
@@ -140,15 +140,15 @@ class Setup():
     def setup_config(self):
         if self.args.force or not os.path.exists(ENV_FILE):
             print_header(f"No {ENV_FILE} file exist")
-            self.create_dir("/etc/abcontrol")
-            self.copy_file_raw(src=f"{HOME}/contrib/abcontrol/abcontrol.env",
+            self.create_dir("/etc/factum")
+            self.copy_file_raw(src=f"{HOME}/contrib/factum/factum.env",
                           dst=ENV_FILE)
             print_header("Please edit the env file, then rerun this script")
             if not self.args.force:
                 sys.exit(1)
         
         import dotenv
-        self.env = dotenv.dotenv_values("/etc/abcontrol/abcontrol.env")
+        self.env = dotenv.dotenv_values("/etc/factum/factum.env")
         if "DJANGO_SECRET_KEY" not in self.env:
             tmp = ""
             for i in range(50):
@@ -161,8 +161,8 @@ class Setup():
 
         if self.args.force or not os.path.exists(CONFIG_FILE):
             print_header(f"No {CONFIG_FILE} file exist")
-            self.create_dir("/etc/abcontrol")
-            self.copy_file(src=f"{HOME}/contrib/abcontrol/abcontrol.yaml",
+            self.create_dir("/etc/factum")
+            self.copy_file(src=f"{HOME}/contrib/factum/factum.yaml",
                            dst=CONFIG_FILE)
             print_header("Please check/edit the configuration file, then rerun this script")
 
@@ -179,46 +179,46 @@ class Setup():
 
 
     # ----------------------------------------------------------------------------+
-    def setup_abcontrol(self):
+    def setup_factum(self):
         """
         Install common functionality, needed on all servers
         """
         
         # ----------------------------------------------------------------------------+
-        print_header("Setup abcontrol")
+        print_header("Setup factum")
 
-        print_subheader("Create abcontrol log directory, set permissions")
-        self.create_dir("/var/log/abcontrol")
-        self.cli.run(f"setfacl -R -m u:www-data:rwX /var/log/abcontrol")
-        self.cli.run(f"setfacl -d -R -m u:www-data:rwX /var/log/abcontrol")
+        print_subheader("Create factum log directory, set permissions")
+        self.create_dir("/var/log/factum")
+        self.cli.run(f"setfacl -R -m u:www-data:rwX /var/log/factum")
+        self.cli.run(f"setfacl -d -R -m u:www-data:rwX /var/log/factum")
         print("done")
 
 
-        print_subheader("Create abcontrol work directory, set permissions")
-        self.create_dir("/var/lib/abcontrol")
-        self.cli.run(f"setfacl -R -m u:www-data:rwX /var/lib/abcontrol")
-        self.cli.run(f"setfacl -d -R -m u:www-data:rwX /var/lib/abcontrol")
+        print_subheader("Create factum work directory, set permissions")
+        self.create_dir("/var/lib/factum")
+        self.cli.run(f"setfacl -R -m u:www-data:rwX /var/lib/factum")
+        self.cli.run(f"setfacl -d -R -m u:www-data:rwX /var/lib/factum")
         print("done")
 
 
-        print_subheader("Create symlink to abcontrol cli")
-        dst = "/usr/bin/abcontrol"
+        print_subheader("Create symlink to factum cli")
+        dst = "/usr/bin/factum"
         if not os.path.exists(dst):
-            self.cli.run(f"ln -s /opt/abcontrol/app/tools/abcontrol/abcontrol.sh {dst}")
+            self.cli.run(f"ln -s /opt/factum/app/tools/factum/factum.sh {dst}")
         print("done")
 
 
         print_subheader("Copy config files")
-        if self.roles.get("abcontrol", False):
+        if self.roles.get("factum", False):
             # Index file, for web page
-            self.copy_file(src="{HOME}/contrib/abcontrol/index.yaml",
-                           dst="/etc/abcontrol/index.yaml")
+            self.copy_file(src="{HOME}/contrib/factum/index.yaml",
+                           dst="/etc/factum/index.yaml")
         
         vhosts = [
             {
-                "src": f"{HOME}/contrib/abcontrol/abcontrol.conf",
-                "dst": "/etc/apache2/sites-available/abcontrol.conf",
-                "name": "abcontrol"
+                "src": f"{HOME}/contrib/factum/factum.conf",
+                "dst": "/etc/apache2/sites-available/factum.conf",
+                "name": "factum"
             },
         ]
         self.setup_apache2(vhosts=vhosts)
@@ -373,8 +373,8 @@ class Setup():
     # ----------------------------------------------------------------------------+
     def setup_postgresql(self):
         print_header("Setup postgresql")
-        if not self.roles.get("abcontrol", False):
-            print_header("Only for abcontrol role")
+        if not self.roles.get("factum", False):
+            print_header("Only for factum role")
             return
 
         dst = "/opt/postgresql"
@@ -407,9 +407,9 @@ class Setup():
             # Create user and set permission
             self.cli.run("cd /opt/rabbitmq")
             self.cli.run("docker-compose exec rabbitmq bash")
-            #self.cli.run("rabbitmqctl add_user abcontrol <passwd>")
+            #self.cli.run("rabbitmqctl add_user factum <passwd>")
             #self.cli.run("rabbitmqctl change_password <user> <passwd>")
-            #self.cli.run('rabbitmqctl set_permissions -p / abcontrol ".*" ".*" ".*"')
+            #self.cli.run('rabbitmqctl set_permissions -p / factum ".*" ".*" ".*"')
             self.cli.run("exit")
 
 
@@ -433,7 +433,7 @@ def main():
 
     setup.setup_ablib()
 
-    setup.setup_abcontrol()
+    setup.setup_factum()
 
     setup.setup_becs()
 
@@ -492,19 +492,19 @@ def main():
     # ----------------------------------------------------------------------------+
     print_header("Verify/Install services")
 
-    if setup.roles.get("abcontrol", False):
-        setup.cli.run(f"systemctl stop abcontrol.service")
-        setup.cli.run(f"cp {HOME}/contrib/abcontrol/abcontrol.service /etc/systemd/system")
+    if setup.roles.get("factum", False):
+        setup.cli.run(f"systemctl stop factum.service")
+        setup.cli.run(f"cp {HOME}/contrib/factum/factum.service /etc/systemd/system")
         setup.cli.run(f"systemctl daemon-reload")
-        setup.cli.run(f"systemctl enable abcontrol.service")
-        setup.cli.run(f"systemctl start abcontrol.service")
+        setup.cli.run(f"systemctl enable factum.service")
+        setup.cli.run(f"systemctl start factum.service")
 
-    setup.cli.run(f"systemctl stop abcontrol_worker.service")
-    setup.cli.run(f"cp {HOME}/contrib/abcontrol/abcontrol_worker.service /etc/systemd/system")
+    setup.cli.run(f"systemctl stop factum_worker.service")
+    setup.cli.run(f"cp {HOME}/contrib/factum/factum_worker.service /etc/systemd/system")
 
     setup.cli.run(f"systemctl daemon-reload")
-    setup.cli.run(f"systemctl enable abcontrol_worker.service")
-    setup.cli.run(f"systemctl start abcontrol_worker.service")
+    setup.cli.run(f"systemctl enable factum_worker.service")
+    setup.cli.run(f"systemctl start factum_worker.service")
 
 
     print("done")

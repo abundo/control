@@ -4,7 +4,7 @@
 //  apt install php-soap php-yaml
 //
 
-define("CONFIG_FILE", "/etc/abcontrol/abcontrol.yaml");
+define("CONFIG_FILE", "/etc/factum/factum.yaml");
 
 $config = yaml_parse_file(CONFIG_FILE);
 

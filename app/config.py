@@ -1,7 +1,7 @@
 import sys
 import multiprocessing
  
-BASE_DIR = "/opt/abcontrol"
+BASE_DIR = "/opt/factum"
 sys.path.append(BASE_DIR)
  
 bind = '0.0.0.0:5000'
@@ -26,8 +26,8 @@ spew = False
 # errorlog = '-'
  
 loglevel = 'debug'
-accesslog = '/var/log/abcontrol/abcontrol_access.log'
-errorlog = '/var/log/abcontrol/abcontrol_error.log'
+accesslog = '/var/log/factum/factum_access.log'
+errorlog = '/var/log/factum/factum_error.log'
  
  
 def post_fork(server, worker):

@@ -12,14 +12,14 @@ from django_auth_ldap.config import LDAPSearch
 # Validate Python version
 if platform.python_version_tuple() < ('3', '6'):
     raise RuntimeError(
-        "abcontrol requires Python 3.6 or higher (current: Python {})".format(platform.python_version())
+        "factum requires Python 3.6 or higher (current: Python {})".format(platform.python_version())
     )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ----- Configuration file -----
-CONFIG_FILE = "/etc/abcontrol/abcontrol.yaml"
+CONFIG_FILE = "/etc/factum/factum.yaml"
 
 if "/opt" not in sys.path:
     sys.path.insert(0, '/opt')
@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
+    'device.apps.DeviceConfig',
     'docs.apps.DocsConfig',
 ]
 
@@ -111,7 +112,7 @@ else:
     # Dummy database, to be able to run CLI scripts
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': "/var/lib/abcontrol/abcontrol.sqlite3",
+        'NAME': "/var/lib/factum/factum.sqlite3",
     }
 
 # Password validation

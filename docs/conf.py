@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'abcontrol'
+project = 'factum'
 copyright = '2020, Anders Lowinger'
 author = 'Anders Lowinger'
 

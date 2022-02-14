@@ -1,6 +1,6 @@
 #!/usr/bin/env python3 
 """
-Common functionality for abcontrol
+Common functionality for factum
 """
 
 import os
@@ -130,14 +130,14 @@ class Rabbitmq_Mgr:
 
     def exchange_cmd_send(self):
         # Exchange for commands to listeners
-        self.channel.exchange_declare(exchange="abcontrol", exchange_type="topic")
+        self.channel.exchange_declare(exchange="factum", exchange_type="topic")
 
     def exchange_cmd_receive(self):
         # exchange for receiving commands to me
-        self.channel.exchange_declare(exchange="abcontrol", exchange_type="topic")
+        self.channel.exchange_declare(exchange="factum", exchange_type="topic")
         result = self.channel.queue_declare("", exclusive=True)
         self.cmd_queue_name = result.method.queue
-        self.channel.queue_bind(exchange="abcontrol", queue=self.cmd_queue_name, routing_key="#")
+        self.channel.queue_bind(exchange="factum", queue=self.cmd_queue_name, routing_key="#")
 
     def exchange_log_receive(self):
         # Exchange for listening on logs
@@ -159,7 +159,7 @@ class Rabbitmq_Mgr:
             xid=xid,
             data=data,
         )
-        self.channel.basic_publish(exchange="abcontrol", routing_key="cmd", body=json.dumps(data))
+        self.channel.basic_publish(exchange="factum", routing_key="cmd", body=json.dumps(data))
         return xid
 
     def receive_cmd(self):

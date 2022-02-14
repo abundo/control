@@ -19,8 +19,8 @@ from orderedattrdict import AttrDict
 sys.path.insert(0, "/opt")
 import ablib.utils as abutils
 
-CONFIG_FILE = "/etc/abcontrol/abcontrol.yaml"       # Used during functional test
-BECS_CACHE_FILE = "/var/lib/abcontrol/becs-cache.json.gz"
+CONFIG_FILE = "/etc/factum/factum.yaml"       # Used during functional test
+BECS_CACHE_FILE = "/var/lib/factum/becs-cache.json.gz"
 
 
 class BECS:
@@ -173,7 +173,7 @@ class BECS:
 
         if refresh:
             print("----- BECS, fetching data, using PHP helper script -----")
-            r = subprocess.getoutput(f"/opt/abcontrol/app/tools/becs/get_becs_elements.php {oid}")
+            r = subprocess.getoutput(f"/opt/factum/app/tools/becs/get_becs_elements.php {oid}")
             data = json.loads(r, object_pairs_hook=AttrDict)
 
         else:
@@ -222,7 +222,7 @@ class BECS:
                 json.dump(data, f)
 
         # Save a copy of all objects, for development
-        # with open("/var/lib/abcontrol/becs_objects.out", "w") as f:
+        # with open("/var/lib/factum/becs_objects.out", "w") as f:
         #     json.dump(self.obj_cache, f, indent=2)
 
         return self.elements_oid

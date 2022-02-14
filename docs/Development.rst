@@ -15,24 +15,21 @@ Directories and Files
 ===========================================  =============================================================
 Directory                                    Description
 ===========================================  =============================================================
-/opt/abcontrol                               home director
-/opt/abcontrol/setup.py                      script to help with setup
-/opt/abcontrol/app                           django project directory
-/opt/abcontrol/app/app                       django project
-/opt/abcontrol/app/app/settings.py           django project settings
-/opt/abcontrol/app/base                      django app
-/opt/abcontrol/app/docs                      django app, shows documentation
-/opt/abcontrol/app/lib                       common libraries for the django project
-/opt/abcontrol/app/static                    collected static files, served by apache2
-/opt/abcontrol/app/tools                     command line tools
-/opt/abcontrol/app/templates                 templates for django auth
-/opt/abcontrol/contrib                       example config files, systemd services
-/opt/abcontrol/docs                          documentation source
-/opt/abcontrol/bin                           Python virtual environment files
-/opt/abcontrol/include                       Python virtual environment files
-/opt/abcontrol/lib                           Python virtual environment files
-/opt/abcontrol/lib64                         Python virtual environment files
-/opt/abcontrol/share                         Python virtual environment files
+/opt/factum                                  home director
+/opt/factum/setup.py                         script to help with setup (WIP)
+/opt/factum/app                              django project directory
+/opt/factum/app/app                          django project
+/opt/factum/app/app/settings.py              django project settings
+/opt/factum/app/base                         django app, base
+/opt/factum/app/base                         django app, device
+/opt/factum/app/docs                         django app, shows documentation
+/opt/factum/app/lib                          common libraries for the django project
+/opt/factum/app/static                       collected static files, served by apache2
+/opt/factum/app/tools                        command line tools
+/opt/factum/app/templates                    templates for django auth
+/opt/factum/contrib                          example config files, systemd services
+/opt/factum/docs                             documentation source
+/opt/factum/venv                             Python virtual environment files
 ===========================================  =============================================================
 
 
@@ -42,8 +39,8 @@ Django setup
 
 Install::
 
-    cd /opt/abcontrol
     source bin/activate
+    cd /opt/factum
     django-admin startproject app .
     cd app
     django-admin startapp base
@@ -60,7 +57,8 @@ dynamic reloading and displays errors directly
 
 CLI::
 
-    cd /opt/abcontrol
     source bin/activate
-    cd /opt/abcontrol/app
+    cd /opt/factum
+    source venv/bin/activate
+    cd /opt/factum/app
     ./manage.py runserver 0.0.0.0:5001

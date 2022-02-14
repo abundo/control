@@ -10,7 +10,7 @@ default_domain: {{ DEFAULT_DOMAIN }}
 # Globally enabled roles
 # Used by the periodic.py script, and web gui sync page
 enabled_roles:
-  abcontrol: true
+  factum: true
   rabbitmq: true
   openldap: true
 
@@ -22,10 +22,10 @@ enabled_roles:
   netbox: false
   oxidized: false
 
-# Used by abcontrol_worker.py service
-# This is tailored differently on each server running abcontrol
+# Used by factum_worker.py service
+# This is tailored differently on each server running factum
 roles:
-  abcontrol: true
+  factum: true
   openldap: true
   rabbitmq: true
 
@@ -83,7 +83,7 @@ api:
 
 rabbitmq:
   hostname: 127.0.0.1
-  username: abtools_control
+  username: factum
   password: <set rabbitmq password>
 
 
@@ -169,6 +169,12 @@ oxidized:
 
 
 oxidized_sync:
+
+  routerdb:
+    tmp: /tmp/routerdb
+    dst: /opt/oxidized/etc/routerdb
+
+
   # List of names to ignore
   ignore_names:
     dummy_no_match: 1

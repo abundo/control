@@ -14,7 +14,7 @@ Uses:
 * A background_worker, that runs background/long running tasks
 
 
-There are two ways to install abcontrol
+There are two ways to install factum
 
 - using setup.py script
 - manual
@@ -23,11 +23,11 @@ There are two ways to install abcontrol
 Deployment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All abcontrol supported services can be run on the same server, or distributed
+All factum supported services can be run on the same server, or distributed
 on multiple servers, using rabbitmq for communication.
 
-If the functionality is distributed on more than one server, install abcontrol
-on all servers, then adjust the /etc/abcontrol/abcontrol.yaml
+If the functionality is distributed on more than one server, install factum
+on all servers, then adjust the /etc/factum/factum.yaml
 
 The "roles:" section controls what functions are handled on each server.
 
@@ -36,7 +36,7 @@ The "roles:" section controls what functions are handled on each server.
 server::
 
     roles:
-        abcontrol: true
+        factum: true
         dns: true
         icinga: true
         ldap: true
@@ -52,7 +52,7 @@ server::
 server1::
 
     roles:
-        abcontrol: true
+        factum: true
         dns: true
         icinga: false
         ldap: true
@@ -65,7 +65,7 @@ server1::
 server2::
 
     roles:
-        abcontrol: false
+        factum: false
         dns: false
         icinga: true
         ldap: false
@@ -78,7 +78,7 @@ server2::
 server3::
 
     roles:
-        abcontrol: false
+        factum: false
         dns: false
         icinga: false
         ldap: false
@@ -93,47 +93,49 @@ server3::
 Installation - Script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-NOTE: The script is a proof of concept, still being worked on
+NOTE: The script is Work In Progress, only use in lab setups
 
 Most of the installation/configuration is done by the setup.py script. 
 The script must be  executed multiple times to do a proper installation, 
 optionally on each server in the installation.
 
 
-abcontrol
+factum
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-abcontrol must be installed in /opt/abcontrol
+factum must be installed in /opt/factum
 
 Install::
 
     cd /opt
-    git clone https://github.com/abundo/abcontrol.git
+    git clone https://github.com/abundo/factum.git
 
 
 setup.py
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-When 
+
 Most of the installation task can be done by the setup.py script.
 
 The first time setup.py runs it checks if there is a configuration file in 
-/etc/abcontrol/abcontrol.py
+/etc/factum/factum.py
 
-If not, it creates the directory /etc/abcontrol and copies a template file 
+If not, it creates the directory /etc/factum and copies a template file 
 into this directory and stops.
 
 NOTE:
-If you want to run abcontrol and all it's supported applications on more than
-one server, adjust the "roles:" section according to Deployment above before
-running the setup.py script again.
+If you want to run factum and all it's supported applications on more than
+one server, adjust the "enabled_roles:" and "roles:" section according to 
+Deployment above before running the setup.py script again.
 
-The roles section indicates to setup.py what software to install and configure.
+The "enabled_roles:" indicites on the main factum server what roles is active.
 
-In a multiple-server setup, abcontrol needs to be installed and configured on
+The "roles:" section indicates on each server what software to install and configure.
+
+In a multiple-server setup, factum needs to be installed and configured on
 each server.
 
 run::
 
-    cd /opt/abcontrol
+    cd /opt/factum
     ./setup.py
 
 
@@ -220,7 +222,7 @@ Docker homepage: https://github.com/tiredofit/docker-openldap-fusiondirectory
 Install::
 
     mkdir -p /opt/openldap
-    cp /opt/abcontrol/contrib/openldap/docker-compose.yaml .
+    cp /opt/factum/contrib/openldap/docker-compose.yaml .
 
 
 Postgresql, as a docker instance
@@ -231,7 +233,7 @@ Docker homepage: todo
 Create directory and copy compose file::
 
     mkdir /opt/postgresql
-    cp /opt/abcontrol/contrib/postgresql/docker-compose.yaml .
+    cp /opt/factum/contrib/postgresql/docker-compose.yaml .
 
 
 
@@ -242,7 +244,7 @@ Docker homepage: todo
 Create directory and copy file::
 
     mkdir /opt/rabbitmq
-    cp /opt/abcontrol/contrib/rabbitmq/docker-compose.yaml /opt/rabbitmq
+    cp /opt/factum/contrib/rabbitmq/docker-compose.yaml /opt/rabbitmq
 
 
 
@@ -287,42 +289,42 @@ Install::
     todo
 
 
-abcontrol
+factum
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 create python virtual environment::
 
-    cd /opt
-    python3 -m venv abcontrol
+    cd /opt/factum
+    python3 -m venv venv
 
 
 Activate python virtual environment and install dependencies::
 
-    cd /opt/abcontrol
-    source bin/activate
+    cd /opt/factum
+    source venv/bin/activate
     pip3 install -r requirements.txt
 
 
 Create log directory::
 
-    mkdir /var/log/abcontrol
-    setfacl -R -m u:www-data:rwX /var/log/abcontrol
-    setfacl -d -R -m u:www-data:rwX /var/log/abcontrol
+    mkdir /var/log/factum
+    setfacl -R -m u:www-data:rwX /var/log/factum
+    setfacl -d -R -m u:www-data:rwX /var/log/factum
 
 
 Create work directory::
 
-    mkdir /var/lib/abcontrol
-    setfacl -R -m u:www-data:rwX /var/lib/abcontrol
-    setfacl -d -R -m u:www-data:rwX /var/lib/abcontrol
+    mkdir /var/lib/factum
+    setfacl -R -m u:www-data:rwX /var/lib/factum
+    setfacl -d -R -m u:www-data:rwX /var/lib/factum
 
 
 Rebuild documentation::
 
-    cd /opt/abtools/docs
+    cd /opt/factum/docs
     make html
 
 
-Create link to abcontrol cli, for easy access::
+Create link to factum cli, for easy access::
 
-    ln -s /opt/abcontrol/app/tools/abcontrol/abcontrol.sh /usr/bin/abcontrol
+    ln -s /opt/factum/app/tools/factum/factum.sh /usr/bin/factum

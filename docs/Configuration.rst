@@ -6,16 +6,16 @@ BECS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If BECS integration is enabled:
 
-On the abcontrol server, configure the "becs:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "becs:" section in 
+/etc/factum/factum.yaml
 
 
 Dnsmgr
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If DNS integration is enabled:
 
-On the Abcontrol server, configure the "sync_dns:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "sync_dns:" section in 
+/etc/factum/factum.yaml
 
 
 Freeradius
@@ -29,21 +29,21 @@ Icinga
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If Icinga integration is enabled:
 
-On the abcontrol server, configure the "icinga:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "icinga:" section in 
+/etc/factum/factum.yaml
 
 
 Librenms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If Librenms integration is enabled:
 
-On the abcontrol server, configure the "librenms:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "librenms:" section in 
+/etc/factum/factum.yaml
 
 
 named/bind
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Abcontrol does not directly control named. It uses Dnsmgr for this.
+factum does not directly control named. It uses Dnsmgr for this.
 
 Configure named for the forward and reverse domains, then
 check Dnsmgr section for how to integrate Dnsmgr and named.
@@ -51,8 +51,8 @@ check Dnsmgr section for how to integrate Dnsmgr and named.
 
 Netbox
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-On the abcontrol server, configure the "netbox:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "netbox:" section in 
+/etc/factum/factum.yaml
 
 Start NetBox::
 
@@ -62,7 +62,7 @@ Start NetBox::
 Wait for 2-3 minutes. First startup takes a while.
 
 
-Using the web GUI, add custom fields needed for abcontrol
+Using the web GUI, add custom fields needed for factum
 
 ===================   =====================================  ==========  ==========  =============  =================== =======  ===============
 NAME                  MODELS                                 TYPE        REQUIRED    FILTER LOGIC   DEFAULT             WEIGHT   DESCRIPTION
@@ -102,14 +102,14 @@ Start the OpenLDAP server:
     docker-compose up -d
 
 
-On the Abcontrol server, configure the "django: ldap:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "django: ldap:" section in 
+/etc/factum/factum.yaml
 
 
 Oxidized
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-On the Abcontrol server, configure the "oxidized:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "oxidized:" section in 
+/etc/factum/factum.yaml
 
 Start oxidized::
 
@@ -119,8 +119,8 @@ Start oxidized::
 
 PostgreSQL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-On the Abcontrol server, configure the "django: db:" section in 
-/etc/abcontrol/abcontrol.yaml
+On the factum server, configure the "django: db:" section in 
+/etc/factum/factum.yaml
 
 Change the POSTGRES_PASSWORD in the /opt/postgresql/docker-compose.yaml file
 so it matches the above password
@@ -147,8 +147,12 @@ Start RabbitMQ::
 Create user and set password and permissions::
 
     docker-compose exec rabbitmq bash
-    rabbitmqctl add_user abcontrol <passwd>
-    rabbitmqctl set_permissions -p / abcontrol ".*" ".*" ".*"
+
+    # User should already be created, ignore this step
+    rabbitmqctl add_user factum <passwd>
+
+    # Set permissions
+    rabbitmqctl set_permissions -p / factum ".*" ".*" ".*"
 
     
 Activate services
@@ -156,17 +160,22 @@ Activate services
 
 copy systemd definitions::
 
-    cd /opt/abcontrol
-    cp contrib/abcontrol/abcontrol.service /etc/systemd/system
-    cp contrib/abcontrol/abcontrol_worker.service /etc/systemd/system
+    cd /opt/factum
+    cp contrib/factum/factum.service /etc/systemd/system
+    cp contrib/factum/factum_worker.service /etc/systemd/system
 
    
 enable and activate services::
 
     systemctl daemon-reload
 
-    systemctl enable abcontrol.service
-    systemctl enable abcontrol_worker.service
+    systemctl enable factum.service
+    systemctl enable factum_worker.service
     
-    systemctl start abcontrol.service
-    systemctl start abcontrol_worker.service
+    systemctl start factum.service
+    systemctl start factum_worker.service
+
+Verify that background services is running
+
+    systemctl status factum.service
+    systemctl status factum_worker.service

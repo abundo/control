@@ -1,4 +1,4 @@
-# abcontrol
+# factum
 
 ## Overview
 
@@ -16,4 +16,4 @@ A collection of applications, with a web gui, that connects
 
 The documentation is
 - Local in the web gui
-- Online at "Read the Docs" https://readthedocs.org/projects/abcontrol/
+- Online at "Read the Docs" https://readthedocs.org/projects/factum/

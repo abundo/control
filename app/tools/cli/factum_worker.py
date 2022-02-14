@@ -7,7 +7,7 @@ Service
   Listen on Netbox Webcalls, and perform neeeded actions
 
 Script is written so it can be used on multiple hosts.
-It checks the configuration file in /etc/abcontrol/abcontrol.yaml for the rabbitmq messages it should handle
+It checks the configuration file in /etc/factum/factum.yaml for the rabbitmq messages it should handle
 """
 import os
 import sys
@@ -115,7 +115,7 @@ def background_log_worker():
                     f.write(str(vars(log_entry)))
                 log_entry.save()
             else:
-                print("ERROR: abcontrol_worker got something with xid in the message", log_entry_json)
+                print("ERROR: factum_worker got something with xid in the message", log_entry_json)
 
 
 def background_netbox_webhook_worker():
@@ -123,7 +123,7 @@ def background_netbox_webhook_worker():
     Listen on netbox webhook calls, and perform the correct action
     This is running as a separate process, using a dedicated connection to rabbitmq
     """
-    print("Starting abcontrol_worker process, listening on netbox webhook calls")
+    print("Starting factum_worker process, listening on netbox webhook calls")
     rabbitmq = common.Rabbitmq_Mgr(config.rabbitmq)
     rabbitmq.exchange_cmd_send()
 
@@ -157,7 +157,7 @@ def run_cmd(data=None, name: str = None, directory=None, cmd: str = None):
     log(f"Running {name}")
     try:
         with Capturing():
-            os.chdir("/opt/abcontrol/app")
+            os.chdir("/opt/factum/app")
             my_env = os.environ.copy()
             my_env["PYTHONPATH"] = "/opt"
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, env=my_env)
@@ -176,15 +176,15 @@ def sync_becs_to_netbox(data):
     if config.roles.get("becs", False):
         run_cmd(data=data,
                 name="sync_becs_to_netbox",
-                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/becs/sync_becs_to_netbox.py", "--refresh-becs", "--refresh-netbox"]
+                cmd=["/opt/factum/venv/bin/python3", "-u", "tools/becs/sync_becs_to_netbox.py", "--refresh-becs", "--refresh-netbox"]
         )
 
 
 def sync_netbox_to_device_api(data):
-    if config.roles.get("abcontrol", False):
+    if config.roles.get("factum", False):
         run_cmd(data=data,
                 name="sync_netbox_to_device_api",
-                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/netbox/netbox_cli.py", "refresh-device-cache"]
+                cmd=["/opt/factum/venv/bin/python3", "-u", "tools/netbox/netbox_cli.py", "refresh-device-cache"]
         )
 
 
@@ -192,7 +192,7 @@ def update_dns(data):
     if config.roles.get("dns", False):
         run_cmd(data=data,
                 name="update_dns()",
-                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/dns/update_dns.py"]
+                cmd=["/opt/factum/venv/bin/python3", "-u", "tools/dns/update_dns.py"]
         )
 
 
@@ -200,7 +200,7 @@ def update_librenms(data):
     if config.roles.get("librenms", False):
         run_cmd(data=data,
                 name="update_librenms()",
-                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/librenms/update_librenms.py"]
+                cmd=["/opt/factum/venv/bin/python3", "-u", "tools/librenms/update_librenms.py"]
         )
 
 
@@ -208,7 +208,7 @@ def update_oxidized(data):
     if config.roles.get("oxidized", False):
         run_cmd(data=data,
                 name="update_oxidized()",
-                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/oxidized/update_oxidized.py"]
+                cmd=["/opt/factum/venv/bin/python3", "-u", "tools/oxidized/update_oxidized.py"]
         )
     
 
@@ -216,7 +216,7 @@ def update_icinga(data):
     if config.roles.get("icinga", False):
         run_cmd(data=data,
                 name="update_icinga()",
-                cmd=["/opt/abcontrol/bin/python3", "-u", "tools/icinga/update_icinga.py"]
+                cmd=["/opt/factum/venv/bin/python3", "-u", "tools/icinga/update_icinga.py"]
         )
 
 
@@ -267,7 +267,7 @@ def icinga_process_check_result(data):
 def main():
     global rabbitmq
 
-    if config.roles.get("abcontrol", False):
+    if config.roles.get("factum", False):
         proc_log = multiprocessing.Process(target=background_log_worker)
         proc_log.start()
 

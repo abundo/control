@@ -626,7 +626,7 @@ if __name__ == "__main__":
     import argparse
     import builtins
 
-    builtins.config = abutils.yaml_load("/etc/abcontrol/abcontrol.yaml")
+    builtins.config = abutils.yaml_load("/etc/factum/factum.yaml")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("cmd", choices=[

@@ -49,7 +49,7 @@ except:
 def run_cmd(cmd: str) -> None:
     cmd: List[str] = cmd.split(" ")
     try:
-        os.chdir("/opt/abcontrol/app")
+        os.chdir("/opt/factum/app")
         p = subprocess.Popen(["python3", "-u"] + cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         for line in p.stdout:
             line = line.rstrip()
@@ -89,7 +89,7 @@ def main() -> None:
         print(url)
         r = requests.get(url)
         print(r.text)
-        # base/abcontrol_cli.py update_icinga
+        # base/factum_cli.py update_icinga
 
     if config.enabled_roles.get("ldap", False):
         print("----- Update LDAP -----")
@@ -102,7 +102,7 @@ def main() -> None:
         print(url)
         r = requests.get(url)
         print(r.text)
-        # base/abcontrol_cli.py update_librenms
+        # base/factum_cli.py update_librenms
 
     if config.enabled_roles.get("oxidized", False):
         print("Update Oxidized")
@@ -110,7 +110,7 @@ def main() -> None:
         print(url)
         r = requests.get(url)
         print(r.text)
-        # base/abcontrol_cli.py update_oxidized
+        # base/factum_cli.py update_oxidized
 
     timestamp = timezone.now() - datetime.timedelta(days=1)
     print("Deleting log entries older than", timestamp)

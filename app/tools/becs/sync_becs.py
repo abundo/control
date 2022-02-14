@@ -69,7 +69,7 @@ def get_becs_elements(oid: int = 1):
     """
     Todo, use PHP and its SOAP XML, much faster than Python
     """
-    r = subprocess.getoutput(f"/opt/abcontrol/app/tools/becs/get_becs_elements.php {oid}")
+    r = subprocess.getoutput(f"/opt/factum/app/tools/becs/get_becs_elements.php {oid}")
     data = json.loads(r)
     parse(data["objects"])
     abutils.pprint(oids)

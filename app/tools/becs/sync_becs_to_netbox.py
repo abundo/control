@@ -22,8 +22,8 @@ ignore_interfaces = {
     "ethernet0": 1,
 }
 
-BECS_CACHE_FILE = "/var/lib/abcontrol/sync-netbox-becs-cache.json.gz"
-NETBOX_CACHE_FILE = "/var/lib/abcontrol/netbox-cache.json.gz"
+BECS_CACHE_FILE = "/var/lib/factum/sync-netbox-becs-cache.json.gz"
+NETBOX_CACHE_FILE = "/var/lib/factum/netbox-cache.json.gz"
 
 if sys.prefix == sys.base_prefix:
     print("Error: You must run this script in a python virtual environment")
