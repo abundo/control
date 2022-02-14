@@ -3,7 +3,7 @@ wheel
 psycopg2-binary
 django~=3.2.11
 django-auth-ldap
-gunicorn==20.0.4
+gunicorn
 orderedattrdict
 jinja2
 PyYAML
@@ -11,6 +11,7 @@ pika
 zeep
 pynetbox
 PyMySQL
+sphinx
 sphinx-material
 sphinx_rtd_theme
 python-dotenv
