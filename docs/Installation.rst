@@ -5,18 +5,18 @@ Developed, tested and used in production on Ubuntu 18.04 and 20.04
 Uses:
 
 * Python venv, to simplify dependency management
-* Django as web framework and ORM
+* Django as web framework and ORM, with gunicorn as WSGI server
 * Apache2 as external web frontend
   * Manages TLS
   * proxies to gunicorn WSGI server
 * RabbitMQ as message bus
 * PostgreSQL as database
-* A background_worker, that runs background/long running tasks
+* A background_worker, which runs background/long running tasks
 
 
 There are two ways to install factum
 
-- using setup.py script
+- using setup.py script  (WIP)
 - manual
 
 

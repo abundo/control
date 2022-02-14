@@ -9,7 +9,7 @@ Abcontrol is a suite of components that integrates
 
 It can optionally integrate with
 
-* BECS
+* BECS from PacketFront software
 * DNS
 * Freeradius
 * Icinga
@@ -74,7 +74,7 @@ RabbitMQ Homepage: https://www.rabbitmq.com/
 Optional applications
 -----------------------------------------------------------------------------
 
-BECS
+BECS from PacketFront Software
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Feature: Optional
 

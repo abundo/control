@@ -2,8 +2,8 @@ Development
 ==============================================================================
 Developed using 
 
-* Ubuntu 20.04 64-bit
-* python3.6, venv
+* Ubuntu server 20.04 64-bit
+* python3.8, venv
 * Desktop: Windows 10 pro
 * Visual Studio Code, with plugins for Python, Remote SSH
 
