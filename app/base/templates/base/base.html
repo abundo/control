@@ -89,7 +89,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         -->
         {% if user.is_authenticated %}
             <div class="info">
-                <a href="#" class="d-block">Inloggad: {{ user.get_username }}</a>
+                <a href="#" class="d-block">User: {{ user.get_username }}</a>
                 <a href="{% url 'logout'%}">Logout</a>
             </div>
         {% else %}
@@ -108,7 +108,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <a href="/" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Meny
+                Home
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

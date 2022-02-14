@@ -28,37 +28,53 @@
               <table class="table table-hover table-sm">
                 <tbody>
                   <tr>
-                    <td colspan="2"><strong>Datainsamling</strong></td>
-                    <td colspan="2"><strong>Uppdatera system</s></td>
+                    <td><strong>Data collection</strong></td>
+                  </tr>
+                  {% if enabled_roles.becs_sync %}
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('sync_becs_to_netbox');" >Run</button></td>
+                    <td>Sync BECS to Netbox</td>
+                  </tr>
+                  {% endif %}
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('sync_netbox_to_device_api');" >Run</button></td>
+                    <td>Sync Netbox to factum Device-API</a></td>
                   </tr>
                   <tr>
-                    <td><button type="button" class="badge badge-info" onclick="send_event('sync_becs_to_netbox');" >Kör</button></td>
-                    <td>Synk BECS -> Netbox</td>
-
-                    <td><button type="button" class="badge badge-info" onclick="send_event('update_dns');" >Kör</button></td>
-                    <td>Uppdatera DNS</td>
+                    <td><strong>Update systems</s></td>
+                  </tr>
+                  {% if enabled_roles.dns %}
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_dns');" >Run</button></td>
+                    <td>Update DNS from factum Device-API</td>
+                  </tr>
+                  {% endif %}
+                  {% if enabled_roles.librenms %}
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_librenms');" >Run</button></td>
+                    <td>Update Librenms from factum Device-API</td>
+                  </tr>
+                  {% endif %}
+                  {% if enabled_roles.oxidized %}
+                  <tr>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('update_oxidized');" >Run</button></td>
+                    <td>Update Oxidized from factum Device-API</td>
+                  </tr>
+                  {% endif %}
+                  {% if enabled_roles.icinga %}
+                  <tr>
+                     <td><button type="button" class="badge badge-info" onclick="send_event('update_icinga');" >Run</button></td>
+                    <td>Update Icinga from factum Device-API</td>
+                  </tr>
+                  {% endif %}
+                  <tr>
+                    <td><strong>Other</s></td>
                   </tr>
                   <tr>
-                    <td><button type="button" class="badge badge-info" onclick="send_event('sync_netbox_to_device_api');" >Kör</button></td>
-                    <td>Synk Netbox -> device-api</a></td>
-                    
-                    <td><button type="button" class="badge badge-info" onclick="send_event('update_icinga');" >Kör</button></td>
-                    <td>Uppdatera Icinga</td>
+                    <td><button type="button" class="badge badge-info" onclick="send_event('ping');" >Run</button></td>
+                    <td>Ping all systems</td>
                 </tr>
-
-                  <tr>
-                    <td colspan="2"><strong>Övrigt</strong></td>
-                    <td><button type="button" class="badge badge-info" onclick="send_event('update_librenms');" >Kör</button></td>
-                    <td>Uppdatera Librenms</td>
-                  </tr>
-
-                   <tr>
-                    <td><button type="button" class="badge badge-info" onclick="send_event('ping');" >Kör</button></td>
-                    <td>Pinga alla systems</td>
-                    <td><button type="button" class="badge badge-info" onclick="send_event('update_oxidized');" >Kör</button></td>
-                    <td>Uppdatera Oxidized</td>
-                  </tr>
-                  </tbody>
+                </tbody>
               </table>
           </div>     <!-- /.card-body -->
       </div> <!-- /.card -->
