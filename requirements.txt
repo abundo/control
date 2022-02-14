@@ -1,8 +1,7 @@
 # to build python-ldap: apt install libsasl2-dev libldap2-dev libssl-dev
 wheel
 psycopg2-binary
-django~=2.2.10
-sphinx~=3.2.1
+django~=3.2.11
 django-auth-ldap
 gunicorn==20.0.4
 orderedattrdict

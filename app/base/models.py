@@ -10,6 +10,7 @@ from django.utils import timezone
 
 
 class Device(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default="")
     manufacturer = models.CharField(max_length=255, blank=True, default="")
     model = models.CharField(max_length=255, blank=True, default="")
@@ -39,6 +40,7 @@ class Device(models.Model):
 
 
 class Parent(models.Model):
+    id = models.AutoField(primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE, default=-1)
     parent = models.CharField(max_length=255, blank=True, default="")
     field_src = models.CharField(max_length=10, db_column='_src', default="", blank=True)
@@ -51,6 +53,7 @@ class Parent(models.Model):
 
 
 class Tag(models.Model):
+    id = models.AutoField(primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE, default=-1)
     tag = models.CharField(max_length=255, blank=True, null=True)
     field_src = models.CharField(max_length=10, db_column='_src', default="", blank=True)
@@ -63,6 +66,7 @@ class Tag(models.Model):
 
 
 class Interface(models.Model):
+    id = models.AutoField(primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE, default=-1)
     name = models.CharField(max_length=255, default="")
     role = models.CharField(max_length=255, blank=True, default="")
@@ -79,6 +83,7 @@ class Interface(models.Model):
 
 
 class InterfaceTag(models.Model):
+    id = models.AutoField(primary_key=True)
     interface = models.ForeignKey(Interface, on_delete=models.CASCADE, default=-1)
     tag = models.CharField(max_length=255, blank=True, default="")
     field_src = models.CharField(max_length=10, db_column='_src', default="", blank=True)
@@ -91,6 +96,7 @@ class InterfaceTag(models.Model):
 
 
 class Cache(models.Model):
+    id = models.AutoField(primary_key=True)
     timestamp = models.DateTimeField(default=timezone.now)
     data = models.TextField(null=False)
     name = models.CharField(max_length=255, default="", blank=True)
@@ -103,6 +109,7 @@ class Cache(models.Model):
 
 
 class Control(models.Model):
+    id = models.AutoField(primary_key=True)
     sync_name = models.CharField(max_length=255, blank=True, default="") 
     timestamp = models.DateTimeField(default=timezone.now)
 
@@ -115,6 +122,7 @@ class Control(models.Model):
 
 # Loosely based on RFC5424
 class Log_Entry(models.Model):
+    id = models.AutoField(primary_key=True)
     timestamp = models.DateTimeField(default=timezone.now)
     facility = models.IntegerField(null=True)
     severity = models.IntegerField(null=True)
