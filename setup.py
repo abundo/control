@@ -128,7 +128,7 @@ class Setup():
 
         print_subheader("Activating python venv")
         self.cli.run(f"cd {HOME}")
-        self.cli.run("source bin/activate")
+        self.cli.run("source venv/bin/activate")
 
         print_subheader("Install factum dependencies")
         self.cli.run(f"cd {HOME}")
