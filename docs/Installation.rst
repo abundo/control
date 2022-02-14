@@ -31,10 +31,29 @@ on all servers, then adjust the /etc/factum/factum.yaml
 
 The "roles:" section controls what functions are handled on each server.
 
+
+
+
 **Example, one server**
+
 
 server::
 
+    # Globally enabled roles
+    enabled_roles:
+        factum: true
+        rabbitmq: true
+
+        becs_sync: false
+        dns: true
+        freeradius: false
+        icinga: false
+        openldap: true
+        librenms: true
+        netbox: true
+        oxidized: true
+
+    # enabled roles on this server
     roles:
         factum: true
         dns: true
@@ -51,6 +70,21 @@ server::
 
 server1::
 
+    # Globally enabled roles
+    enabled_roles:
+        factum: true
+        rabbitmq: true
+
+        becs_sync: false
+        dns: true
+        freeradius: false
+        icinga: false
+        openldap: true
+        librenms: true
+        netbox: true
+        oxidized: true
+
+    # enabled roles on this server
     roles:
         factum: true
         dns: true
@@ -64,6 +98,7 @@ server1::
 
 server2::
 
+    # enabled roles on this server
     roles:
         factum: false
         dns: false
@@ -77,6 +112,7 @@ server2::
 
 server3::
 
+    # enabled roles on this server
     roles:
         factum: false
         dns: false
