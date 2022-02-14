@@ -39,8 +39,10 @@ Django setup
 
 Install::
 
-    source bin/activate
+
     cd /opt/factum
+    python3 -m venv venv
+    source venv/bin/activate
     django-admin startproject app .
     cd app
     django-admin startapp base
@@ -57,7 +59,6 @@ dynamic reloading and displays errors directly
 
 CLI::
 
-    source bin/activate
     cd /opt/factum
     source venv/bin/activate
     cd /opt/factum/app
